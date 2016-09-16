@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.wxn.example.webapp.dao.RoleMapper">
+
+    <!--<resultMap id="roleResultMap" type="cn.wxn.example.webapp.entry.Role">-->
+        <!--<id column="r_id" property="id"/>-->
+        <!--<result column="r_name" property="name"/>-->
+        <!--<result column="r_description" property="description"/>-->
+    <!--</resultMap>-->
+
+    <insert id="insertRole" parameterType="cn.wxn.example.webapp.entry.Role">
+        insert into role(r_name, r_description) values(#{name},#{description});
+    </insert>
+
+    <!--<update id="updateRole" parameterType="cn.wxn.example.webapp.entry.Role">-->
+        <!--update TABLE role SET-->
+        <!--<if test="r_name != null">-->
+            <!--r_name = #{name}-->
+        <!--</if>-->
+        <!--<if test="r_description != null">-->
+            <!--r_description = #{description}-->
+        <!--</if>-->
+    <!--</update>-->
+
+    <!--<select id="findRoleById" parameterType="int" resultMap="roleResultMap">-->
+        <!--select r_id, r_name, r_description from role-->
+        <!--where r_id = #{id};-->
+    <!--</select>-->
+
+    <!--<delete id="deleteRole" parameterType="int">-->
+        <!--delete from role where r_id = #{id};-->
+    <!--</delete>-->
+
+    <!--<select id="findRoles" resultSets="roleResultMap">-->
+        <!--select * from role;-->
+    <!--</select>-->
+
+</mapper>
