@@ -11,25 +11,14 @@
 
     <insert id="insertRole" parameterType="cn.wxn.example.webapp.entry.Role" useGeneratedKeys="true" keyProperty="id">
         insert into role(
-            <if test="name != null">
                 r_name
-            </if>
-
-            <if test="name != null and description != null">
-                ,
-            </if>
             <if test="description != null">
-                r_description
+               , r_description
             </if>
         ) values(
-            <if test="name != null">
                 #{name}
-            </if>
-            <if test="name != null and description != null">
-                ,
-            </if>
             <if test="description != null">
-                #{description}
+               , #{description}
             </if>
         );
     </insert>

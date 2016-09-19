@@ -15,22 +15,78 @@
     <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
     <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
+    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+    <script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="http://cdn.bootcss.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+
+    <script>
+        function toAddUI() {
+            $('#addOrEditDialogUI').modal({backdrop: false, show: true});
+            $('#modal_title').html("添加岗位");
+            $('#modal_body').load("${pageContext.request.contextPath}/role/addUI");
+        }
+
+        function toEditUI(roleid) {
+            $('#addOrEditDialogUI').modal({backdrop: false, show: true});
+            $('#modal_title').html("岗位修改");
+            $('#modal_body').load("${pageContext.request.contextPath}/role/editUI/" + roleid);
+        }
+        function toDel(roleid) {
+            $(this).load("${pageContext.request.contextPath}/role/del/" + roleid, function (data) {
+                if (data) {
+                    window.location.reload();
+                }
+            });
+            <%--$('#addOrEditDialogUI').modal({backdrop: false, show: true});--%>
+            <%--$('#modal_title').html("岗位删除");--%>
+            <%--$('#modal_body').load("${pageContext.request.contextPath}/role/delUI/" + roleid);--%>
+        }
+    </script>
 </head>
 <body>
-<table id="roles" class="rolesTable">
-    <caption title="岗位列表"/>
-    <tr>
-        <th>岗位</th>
-        <th>描述</th>
-        <th>操作</th>
-    </tr>
-    <c:forEach items="${roles}" var="role">
-        <tr>
-            <hd>${role.name}/></hd>
-            <hd>${role.description} /></hd>
-            <hd><a href="">修改</a> <a href="">删除</a></hd>
+<div class="table-responsive">
+    <table id="roles" class="table table-striped">
+        <h2>岗位列表</h2>
+        <tr class="table-row-cell">
+            <th>岗位</th>
+            <th>描述</th>
+            <th>操作</th>
         </tr>
-    </c:forEach>
-</table>
+        <c:forEach items="${roles}" var="role">
+            <tr>
+                <td>${role.name}</td>
+                <td>${role.description}</td>
+                <td>
+                    <button type="button" class="btn btn-default" onclick="toEditUI(${role.id})">修改</button>
+                    <button type="button" class="btn btn-default" onclick="toDel(${role.id})">删除</button>
+            </tr>
+        </c:forEach>
+    </table>
+    <button type="button" class="btn btn-primary" id="btnAddUI" onclick="toAddUI()">新增</button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="addOrEditDialogUI" tabindex="-1" role="dialog" aria-labelledby="modal_title"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                        <span class="sr-only">Close</span>
+                    </button>
+                    <h4 class="modal-title" id="modal_title"></h4>
+                </div>
+                <%--<div class="modal-body" id="modal_body">--%>
+                <%--</div>--%>
+                <div class="modal-footer" id="modal_body">
+                    <%--<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>--%>
+                    <%--<button type="button" class="btn btn-primary">Save changes</button>--%>
+                </div>
+                <%--</div>--%>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>
