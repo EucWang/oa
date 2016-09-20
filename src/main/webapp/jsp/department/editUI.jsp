@@ -27,12 +27,14 @@
         <%--</div>--%>
 
         <input type="hidden" name="id" value="${department.id}"/>
+        <input type="hidden" name="departmentid" value="${pid}"/>
 
 
         <div class="form-group">
             <label for="name" class="col-sm-2 control-label">上级部门</label>
             <div class="col-sm-10">
                 <select class="form-control" name="parent.id" id="parent.id">
+                    <option value="0">无</option>
                     <c:forEach items="${departments}" var="dt">
                         <c:if test="${department.parent.id == dt.id}">
                             <option value="${dt.id}" selected="selected">${dt.name}</option>

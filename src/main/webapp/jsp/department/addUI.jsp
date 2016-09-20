@@ -24,16 +24,24 @@
         <%--<h3 class="form-title">添加岗位</h3>--%>
         <%--</div>--%>
 
-            <div class="form-group">
-                <label for="name" class="col-sm-2 control-label">上级部门</label>
-                <div class="col-sm-10">
-                    <select class="form-control" name="parent.id" id="parent.id">
-                        <c:forEach items="${departments}" var="dt">
+        <input type="hidden" name="departmentid" value="${departmentid}"/>
+
+        <div class="form-group">
+            <label for="name" class="col-sm-2 control-label">上级部门</label>
+            <div class="col-sm-10">
+                <select class="form-control" name="parent.id" id="parent.id">
+                    <option value="0">无</option>
+                    <c:forEach items="${departments}" var="dt">
+                        <c:if test="${departmentid == dt.id}">
+                            <option value="${dt.id}" selected="selected">${dt.name}</option>
+                        </c:if>
+                        <c:if test="${departmentid != dt.id}">
                             <option value="${dt.id}">${dt.name}</option>
-                        </c:forEach>
-                    </select>
-                </div>
+                        </c:if>
+                    </c:forEach>
+                </select>
             </div>
+        </div>
 
         <div class="form-group">
             <label for="name" class="col-sm-2 control-label">部门名称</label>

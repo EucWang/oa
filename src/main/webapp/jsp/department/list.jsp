@@ -25,13 +25,13 @@
         function toAddUI() {
             $('#addOrEditDialogUI').modal({backdrop: false, show: true});
             $('#modal_title').html("添加部门");
-            $('#modal_body').load("${pageContext.request.contextPath}/department/addUI");
+            $('#modal_body').load("${pageContext.request.contextPath}/department/addUI?departmentid=" +${departmentid});
         }
 
         function toEditUI(departmentid) {
             $('#addOrEditDialogUI').modal({backdrop: false, show: true});
             $('#modal_title').html("部门修改");
-            $('#modal_body').load("${pageContext.request.contextPath}/department/editUI/" + departmentid);
+            $('#modal_body').load("${pageContext.request.contextPath}/department/editUI/" + departmentid + "?departmentid=" + ${departmentid});
         }
 
         function toDel(departmentid) {
@@ -43,6 +43,13 @@
                 }
             });
         }
+
+        function intoDepartmentUI(departmentid) {
+            <%--$(' html').load("${pageContext.request.contextPath}/department/list/" + departmentid);--%>
+            location.href = "${pageContext.request.contextPath}/department/list?pid=" + departmentid;
+        }
+
+
     </script>
 </head>
 <body>
@@ -56,7 +63,12 @@
         </tr>
         <c:forEach items="${departments}" var="department">
             <tr>
-                <td>${department.name}</td>
+                <td>
+                    <button type="button" class="btn btn-default"
+                            onclick="intoDepartmentUI(${department.id})">${department.name}</button>
+                </td>
+                    <%--<td><a href="${pageContext.request.contextPath}/department/list/${department.id}">${department.name}</a>--%>
+                </td>
                 <td>${department.description}</td>
                 <td>
                     <button type="button" class="btn btn-default" onclick="toEditUI(${department.id})">修改</button>
@@ -65,6 +77,12 @@
         </c:forEach>
     </table>
     <button type="button" class="btn btn-primary" id="btnAddUI" onclick="toAddUI()">新增</button>
+    <%--<c:if test="${departments.get(0) != null && departments.get(0).parent != null && departments.get(0).parent.id != null}">--%>
+    <c:if test="${grandparentid != null}">
+        <button type="button" class="btn btn-primary" id="intoDepartmentUI"
+                onclick="intoDepartmentUI(${grandparentid})">返回上一级
+        </button>
+    </c:if>
 
     <!-- Modal -->
     <div class="modal fade" id="addOrEditDialogUI" tabindex="-1" role="dialog" aria-labelledby="modal_title"

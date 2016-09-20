@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -26,16 +28,49 @@ public class DepartmentController {
     private DepartmentService departmentService;
 
     @RequestMapping("/addUI")
-    public ModelAndView addUI(ModelAndView modelAndView) throws Exception {
+    public ModelAndView addUI(ModelAndView modelAndView, String departmentid) throws Exception {
         modelAndView.setViewName("/department/addUI");
 
-        List<DepartmentDto> departments = departmentService.findDepartments();
+        List<DepartmentDto> departments = departmentService.findDepartments(-1L);
+        if (departments != null && departments.size() > 0) {
+
+            Collections.sort(departments, new Comparator<DepartmentDto>() {
+                public int compare(DepartmentDto o1, DepartmentDto o2) {
+                    Long o1id = o1.getParent().getId();
+                    Long o2id = o2.getParent().getId();
+                    if (o1id > o2id) {
+                        return 1;
+                    } else if (o1id == o2id) {
+                        return 0;
+                    } else {
+                        return -1;
+                    }
+                }
+            });
+
+            for (DepartmentDto departmentDto : departments) {
+                if (departmentDto != null && departmentDto.getParent() != null && !"0".equals(departmentDto.getParent().getId())) {
+                    for (DepartmentDto dd : departments) {
+                        if (dd.getId().equals(departmentDto.getParent().getId())) {
+                            departmentDto.setParent(dd);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
         modelAndView.addObject("departments", departments);
+
+        if (!StringUtils.isBlank(departmentid)) {
+            modelAndView.addObject("departmentid", departmentid);
+        }
+
         return modelAndView;
     }
 
     @RequestMapping("/editUI/{id}")
-    public ModelAndView editUI(ModelAndView modelAndView, @PathVariable("id") String id) throws Exception {
+    public ModelAndView editUI(ModelAndView modelAndView, @PathVariable("id") String id, String departmentid) throws Exception {
         if (StringUtils.isBlank(id)) {
             throw new ParamFailException("DepartmentController->method(editUI) parameter id is empty");
         }
@@ -46,11 +81,12 @@ public class DepartmentController {
 
         DepartmentDto departmentById = departmentService.findDepartmentById(aLong);
 
+        modelAndView.addObject("pid", departmentid);
         modelAndView.addObject("department", departmentById);
         modelAndView.setViewName("/department/editUI");
 
 
-        List<DepartmentDto> departments = departmentService.findDepartments();
+        List<DepartmentDto> departments = departmentService.findDepartments(-1L);
         modelAndView.addObject("departments", departments);
         return modelAndView;
     }
@@ -63,6 +99,11 @@ public class DepartmentController {
 
         boolean b = departmentService.insertDepartment(departmentDto);
         if (b) {
+
+            if (!StringUtils.isBlank(departmentDto.getDepartmentid())) {
+                modelAndView.addObject("pid", departmentDto.getDepartmentid());
+            }
+
             modelAndView.setViewName("redirect:/department/list");
             return modelAndView;
         }
@@ -78,6 +119,9 @@ public class DepartmentController {
 
         boolean b = departmentService.updateDepartment(departmentDto);
         if (b) {
+            if (!StringUtils.isBlank(departmentDto.getDepartmentid())) {
+                modelAndView.addObject("pid", departmentDto.getDepartmentid());
+            }
             modelAndView.setViewName("redirect:/department/list");
             return modelAndView;
         }
@@ -98,12 +142,35 @@ public class DepartmentController {
         return b;
     }
 
+    /**
+     * @param pid          默认传值0,表示第一层的部门
+     * @param modelAndView
+     * @return
+     * @throws Exception
+     */
     @RequestMapping("/list")
-    public ModelAndView list(ModelAndView modelAndView) throws Exception {
+    public ModelAndView list(String pid, ModelAndView modelAndView) throws Exception {
         modelAndView.setViewName("department/list");
 
-        List<DepartmentDto> departments = departmentService.findDepartments();
+        if (StringUtils.isBlank(pid)) {
+            pid = "0";
+        }
+        Long pidLong = Long.valueOf(pid);
+        if (pidLong == null || pidLong < 0) {
+            pidLong = 0L;
+        }
+
+        List<DepartmentDto> departments = departmentService.findDepartments(pidLong);
         modelAndView.addObject("departments", departments);
+        modelAndView.addObject("departmentid", pid);
+
+        String grandParentId = null;
+        if (pidLong > 0) {
+            DepartmentDto parentDepartment = departmentService.findDepartmentById(pidLong);
+            grandParentId = parentDepartment.getParent().getId().toString();
+            modelAndView.addObject("grandparentid", grandParentId);
+        }
+
         return modelAndView;
     }
 }

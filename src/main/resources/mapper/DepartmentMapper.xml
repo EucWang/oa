@@ -24,7 +24,7 @@
                 , #{parent.id}
             </if>
             <if test="parent.id == null">
-                , -1
+                , 0
             </if>
             <if test="description != null">
                , #{description}
@@ -49,12 +49,17 @@
         where d_id = #{id};
     </select>
 
+    <!-- 级联删除 ,部门,以及部门的子部门,以及子部门的子部门... -->
     <delete id="deleteDepartment" parameterType="long">
         delete from department where d_id = #{id};
     </delete>
 
-    <select id="findDepartments" resultMap="departmentResultMap">
-        select * from department;
+    <select id="findDepartments" resultMap="departmentResultMap" parameterType="long">
+        select d_id, d_name, p_id, d_description from department
+        <if test="_parameter >= 0">
+        where p_id = #{pid}
+        </if>
+        ;
     </select>
 
 </mapper>

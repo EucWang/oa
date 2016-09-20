@@ -10,6 +10,17 @@ import java.util.List;
  */
 public class DepartmentDto implements Serializable{
 
+    public String getDepartmentid() {
+        return departmentid;
+    }
+
+    public void setDepartmentid(String departmentid) {
+        this.departmentid = departmentid;
+    }
+
+    //这个属性不属于原有的Department的数据
+    private String departmentid;
+
     private Long id;
 
     private String name;
