@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,8 +17,9 @@ import java.util.List;
 /**
  * Created by wangxn on 2016/9/12.
  */
-@Service("DepartmentService")
+@Service("departmentService")
 //@WebService
+@Transactional
 public class DepartmentServiceImpl implements DepartmentService {
 
     private Logger logger = Logger.getLogger(DepartmentServiceImpl.class);
@@ -72,6 +74,19 @@ public class DepartmentServiceImpl implements DepartmentService {
     public boolean deleteDepartment(long id) throws Exception {
         if (id >= 0) {
             try {
+
+                Department departmentById = departmentMapper.findDepartmentById(id);
+                if (departmentById == null) {
+                    return false;
+                }
+
+                int lowerLevelDepartments = departmentMapper.getLowerLevelDepartments(departmentById.getId());
+                if (lowerLevelDepartments > 0) {
+                    logger.info("DepartmentServiceImpl -> method (deleteDepartment) the department "+id+ " which have children department, can not delete");
+                    return false;
+                }
+
+
                 int i = departmentMapper.deleteDepartment(id);
                 if (i > 0) {
                     return true;

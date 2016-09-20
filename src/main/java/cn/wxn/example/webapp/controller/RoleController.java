@@ -2,10 +2,12 @@ package cn.wxn.example.webapp.controller;
 
 import cn.wxn.example.webapp.dto.RoleDto;
 import cn.wxn.example.webapp.exception.ParamFailException;
+import cn.wxn.example.webapp.service.RoleService;
 import cn.wxn.example.webapp.service.impl.RoleServiceImpl;
 import cn.wxn.example.webapp.utils.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,7 +26,9 @@ public class RoleController {
     private Logger logger = Logger.getLogger(RoleController.class);
 
     @Autowired
-    private RoleServiceImpl roleService;
+
+    @Qualifier("roleService")
+    private RoleService roleService;
 
     @RequestMapping("/addUI")
     public String addUI() throws Exception {

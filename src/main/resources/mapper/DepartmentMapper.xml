@@ -8,33 +8,34 @@
         <result column="d_name" property="name"/>
         <result column="d_description" property="description"/>
         <association property="parent" javaType="cn.wxn.example.webapp.entry.Department">
-            <id column="p_id" property="id" />
+            <id column="p_id" property="id"/>
         </association>
     </resultMap>
 
-    <insert id="insertDepartment" parameterType="cn.wxn.example.webapp.entry.Department" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insertDepartment" parameterType="cn.wxn.example.webapp.entry.Department" useGeneratedKeys="true"
+            keyProperty="id">
         insert into department(
-                d_name,p_id
-            <if test="description != null">
-               , d_description
-            </if>
+        d_name,p_id
+        <if test="description != null">
+            , d_description
+        </if>
         ) values(
-                #{name}
-            <if test="parent.id != null">
-                , #{parent.id}
-            </if>
-            <if test="parent.id == null">
-                , 0
-            </if>
-            <if test="description != null">
-               , #{description}
-            </if>
+        #{name}
+        <if test="parent.id != null">
+            , #{parent.id}
+        </if>
+        <if test="parent.id == null">
+            , 0
+        </if>
+        <if test="description != null">
+            , #{description}
+        </if>
         );
     </insert>
 
     <update id="updateDepartment" parameterType="cn.wxn.example.webapp.entry.Department">
         update department SET
-            d_name = #{name}
+        d_name = #{name}
         <if test="description != null">
             ,d_description = #{description}
         </if>
@@ -44,9 +45,32 @@
         where d_id = #{id};
     </update>
 
-    <select id="findDepartmentById" parameterType="long" resultMap="departmentResultMap">
-        select d_id, d_name, d_description, p_id from department
-        where d_id = #{id};
+    <resultMap id="departmentResultMap2" type="cn.wxn.example.webapp.entry.Department">
+        <id column="d1id" property="id"/>
+        <result column="d1name" property="name"/>
+        <result column="d1description" property="description"/>
+        <association property="parent" javaType="cn.wxn.example.webapp.entry.Department">
+            <id column="d2id" property="id"/>
+            <result column="d2name" property="name"/>
+            <result column="d2pid" property="parent.id"/>
+            <result column="d2description" property="description"/>
+
+            <association property="parent" javaType="cn.wxn.example.webapp.entry.Department">
+                <id column="d2pid" property="id"/>
+            </association>
+        </association>
+    </resultMap>
+
+    <select id="findDepartmentById" parameterType="long" resultMap="departmentResultMap2">
+--         select d_id, d_name, d_description, p_id from department
+--         where d_id = #{id};
+
+          select d1.d_id d1id, d1.d_name d1name, d1.p_id d1pid, d1.d_description d1description,
+                 d2.d_id d2id, d2.d_name d2name, d2.p_id d2pid, d2.d_description d2description
+          from department d1
+          left join department d2
+          on (d1.p_id=d2.d_id)
+          where d1.d_id=#{id};
     </select>
 
     <!-- 级联删除 ,部门,以及部门的子部门,以及子部门的子部门... -->
@@ -57,9 +81,13 @@
     <select id="findDepartments" resultMap="departmentResultMap" parameterType="long">
         select d_id, d_name, p_id, d_description from department
         <if test="_parameter >= 0">
-        where p_id = #{pid}
+            where p_id = #{pid}
         </if>
         ;
+    </select>
+
+    <select id="getLowerLevelDepartments" parameterType="long">
+         select count(*) from department where p_id = #{id};
     </select>
 
 </mapper>

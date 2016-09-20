@@ -6,9 +6,11 @@ import cn.wxn.example.webapp.service.DepartmentService;
 import cn.wxn.example.webapp.utils.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.Collections;
@@ -25,15 +27,17 @@ public class DepartmentController {
     private Logger logger = Logger.getLogger(DepartmentController.class);
 
     @Autowired
+    @Qualifier("departmentService")
     private DepartmentService departmentService;
 
     @RequestMapping("/addUI")
     public ModelAndView addUI(ModelAndView modelAndView, String departmentid) throws Exception {
         modelAndView.setViewName("/department/addUI");
 
+
+        //获取所有的department的集合,然后为其赋值其上级部门的对象
         List<DepartmentDto> departments = departmentService.findDepartments(-1L);
         if (departments != null && departments.size() > 0) {
-
             Collections.sort(departments, new Comparator<DepartmentDto>() {
                 public int compare(DepartmentDto o1, DepartmentDto o2) {
                     Long o1id = o1.getParent().getId();
@@ -129,7 +133,8 @@ public class DepartmentController {
     }
 
     @RequestMapping("/delete/{id}")
-    public boolean delete(@PathVariable("id") String id, ModelAndView modelAndView) throws Exception {
+    @ResponseBody
+    public String delete(@PathVariable("id") String id, ModelAndView modelAndView) throws Exception {
         if (StringUtils.isBlank(id)) {
             throw new ParamFailException("DepartmentController->method(editUI) parameter id is empty");
         }
@@ -139,7 +144,12 @@ public class DepartmentController {
         }
 
         boolean b = departmentService.deleteDepartment(aLong);
-        return b;
+        if (b) {
+            logger.info("删除id为" + id + "成功");
+        } else {
+            logger.info("删除id为" + id + "失败");
+        }
+        return b?"1":"0";
     }
 
     /**

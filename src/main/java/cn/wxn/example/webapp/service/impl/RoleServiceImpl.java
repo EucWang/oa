@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.List;
  */
 @Service("roleService")
 //@WebService
+@Transactional
 public class RoleServiceImpl implements RoleService {
 
     private Logger logger = Logger.getLogger(RoleServiceImpl.class);

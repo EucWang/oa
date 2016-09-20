@@ -22,6 +22,13 @@
     <script src="http://cdn.bootcss.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
 
     <script>
+
+        function showMsgDialog(title, content) {
+            $("#message_dialog").modal({backdrop: false, show: true});
+            $("#output_info_title").text(title);
+            $("#output_info").text(content);
+        }
+
         function toAddUI() {
             $('#addOrEditDialogUI').modal({backdrop: false, show: true});
             $('#modal_title').html("添加部门");
@@ -36,10 +43,12 @@
 
         function toDel(departmentid) {
             $(this).load("${pageContext.request.contextPath}/department/delete/" + departmentid, function (data) {
-                if (data) {
+                if (1 == data) {
                     window.location.reload();
                 } else {
-                    alert("删除失败!");
+//                    alert("删除失败!");
+                    console.log("删除失败!");
+                    showMsgDialog("提示!", "删除失败!");
                 }
             });
         }
@@ -48,8 +57,6 @@
             <%--$(' html').load("${pageContext.request.contextPath}/department/list/" + departmentid);--%>
             location.href = "${pageContext.request.contextPath}/department/list?pid=" + departmentid;
         }
-
-
     </script>
 </head>
 <body>
@@ -103,6 +110,31 @@
                     <%--<button type="button" class="btn btn-primary">Save changes</button>--%>
                 </div>
                 <%--</div>--%>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 消息对话提示框 -->
+    <div class="modal fade" id="message_dialog" tabindex="-2" role="dialog" aria-labelledby="output_info_title">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="output_info_title"></h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label id="output_info"></label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">
+                        <span aria-hidden="true">关闭</span>
+                    </button>
+                </div>
             </div>
         </div>
     </div>

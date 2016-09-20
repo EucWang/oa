@@ -28,9 +28,20 @@
         </tx:attributes>
     </tx:advice>
 
-    <!-- aop 配置 -->
-    <!--<aop:config proxy-target-class="false">-->
-    <!--<aop:advisor advice-ref="txAdvice"-->
-    <!--pointcut="execution(* cn.wxn.example.webapp.service.impl.*.*(..))"/>-->
-    <!--</aop:config>-->
+    <!--事务开启 -->
+    <tx:annotation-driven transaction-manager="transactionManager" />
+
+
+    <!-- aop 配置 proxy-target-class="false"-->
+    <aop:config>
+        <aop:pointcut id="pointcutExtend"
+                      expression="execution(public * cn.wxn.example.webapp.service.*.*(..))" />
+
+        <aop:pointcut id="pointcutBase"
+                      expression="execution(public * cn.wxn.example.webapp.service.impl.*.*(..))" />
+        <aop:advisor advice-ref="txAdvice"
+                     pointcut-ref="pointcutExtend"/>
+        <aop:advisor advice-ref="txAdvice"
+                     pointcut-ref="pointcutBase" />
+    </aop:config>
 </beans>

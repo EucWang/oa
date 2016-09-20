@@ -18,4 +18,6 @@ public interface DepartmentMapper extends ICaptchaMapper {
     Department findDepartmentById(long id);
 
     List<Department> findDepartments(long pid);
+
+    int getLowerLevelDepartments(long id);
 }
