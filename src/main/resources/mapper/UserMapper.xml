@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.wxn.example.webapp.dao.UserMapper">
+
+    <resultMap id="userResultMap" type="cn.wxn.example.webapp.entry.User">
+        <id column="u_id" property="id"/>
+        <result column="u_name" property="name"/>
+        <result column="gender" property="gender"/>
+        <result column="nickername" property="nickname"/>
+
+        <result column="u_pwd" property="password"/>
+        <result column="u_phoneNum" property="phoneNumber"/>
+        <result column="u_email" property="email"/>
+
+        <result column="u_description" property="description"/>
+        <result column="regist_date" property="registDate"/>
+        <result column="u_pic" property="pic"/>
+
+        <result column="birthday" property="birthday"/>
+        <result column="work_age" property="workAge"/>
+
+        <association property="higherUser" javaType="cn.wxn.example.webapp.entry.User">
+            <id column="parent_id" property="id"/>
+            <result column="u2name" property="u2name"/>
+            <result column="u2gender" property="u2gender"/>
+            <result column="u2nickername" property="u2nickername"/>
+            <result column="u2pwd" property="u2pwd"/>
+            <result column="u2phoneNum" property="u2phoneNum"/>
+            <result column="u2email" property="u2email"/>
+            <result column="u2description" property="u2description"/>
+            <result column="u2registDate" property="u2registDate"/>
+            <result column="u2pic" property="u2pic"/>
+            <result column="u2birthday" property="u2birthday"/>
+            <result column="u2workage" property="u2workage"/>
+            <result column="u2parentid" property="u2parentid"/>
+            <result column="u2did" property="u2did"/>
+        </association>
+
+        <association property="department" javaType="cn.wxn.example.webapp.entry.Department">
+            <id column="d_id" property="id"/>
+
+            <result column="d1name" property="name"/>
+            <result column="d1description" property="description"/>
+
+            <association property="parent" javaType="cn.wxn.example.webapp.entry.Department">
+                <id column="d1pid" property="id" />
+            </association>
+        </association>
+    </resultMap>
+
+    <insert id="insertUser" parameterType="cn.wxn.example.webapp.entry.User" useGeneratedKeys="true" keyProperty="id">
+        insert into user(
+        u_name, gender, nickername, u_pwd, u_phoneNum, u_email,
+        u_description, regist_date, u_pic, birthday, work_age, d_id, parent_id
+        ) values(
+        #{name},
+        <if test="gender == null">
+            -1
+        </if>
+        <if test="gender != null">
+            #{gender}
+        </if>
+        , #{nickname}, #{password}, #{phoneNumber}, #{email}, #{description},
+        now(), #{pic}, #{birthday}, #{workAge},
+        <if test="department != null">
+            #{department.id}
+        </if>
+        <if test="department == null">
+            0
+        </if>
+        ,
+        <if test="higherUser != null">
+            #{department.id}
+        </if>
+        <if test="higherUser == null">
+            0
+        </if>
+        );
+    </insert>
+
+    <update id="updateUser" parameterType="cn.wxn.example.webapp.entry.User">
+        update user
+        <set>
+            <if test="name != null">
+                u_name= #{name},
+            </if>
+            <if test="gender != null">
+                gender = #{gender},
+            </if>
+            <if test="nickname != null">
+                nickername= #{nickname},
+            </if>
+            <if test="password != null">
+                u_pwd = #{password},
+            </if>
+            <if test="phoneNumber != null">
+                u_phoneNum = #{phoneNumber},
+            </if>
+            <if test="email != null">
+                u_email = #{email},
+            </if>
+            <if test="description != null">
+                u_description= #{description},
+            </if>
+            <if test="pic != null">
+                u_pic= #{pic},
+            </if>
+            <if test="birthday != null">
+                birthday = #{birthday},
+            </if>
+            <if test="workAge != null">
+                work_age= #{workAge},
+            </if>
+            <if test="higherUser != null">
+                parent_id = #{higherUser.id},
+            </if>
+            <if test="department != null">
+                d_id = #{department.id},
+            </if>
+        </set>
+        where u_id = #{id};
+    </update>
+
+    <select id="findUserById" parameterType="long" resultMap="userResultMap">
+        select
+          u1.u_id,
+          u1.u_name,
+          u1.gender,
+          u1.nickername,
+          u1.u_pwd,
+          u1.u_phoneNum,
+          u1.u_email,
+          u1.u_description,
+          u1.regist_date,
+          u1.u_pic,
+          u1.birthday,
+          u1.work_age,
+          u1.parent_id,
+          u1.d_id,
+
+          u2.u_id u2uid,
+          u2.u_name u2name,
+          u2.gender u2gender,
+          u2.nickername u2nickername,
+          u2.u_pwd u2pwd,
+          u2.u_phoneNum u2phoneNum,
+          u2.u_email u2email,
+          u2.u_description u2description,
+          u2.regist_date u2registDate,
+          u2.u_pic u2pic,
+          u2.birthday u2birthday,
+          u2.work_age u2workage,
+          u2.parent_id u2parentid,
+          u2.d_id u2did,
+
+          d1.d_id d1did,
+          d1.d_name d1name,
+          d1.d_description d1description,
+          d1.p_id d1pid
+        from user u1
+        left join user u2
+        on u1.parent_id=u2.u_id
+        LEFT JOIN  department d1
+        on u1.d_id = d1.d_id
+        where u1.u_id = 5;
+    </select>
+
+    <delete id="deleteUser" parameterType="long">
+        delete from user where u_id = #{id};
+    </delete>
+
+    <select id="findUsers" resultMap="userResultMap">
+        select * from user;
+    </select>
+
+</mapper>

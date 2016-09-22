@@ -9,35 +9,35 @@ import java.util.Set;
  */
 public class User implements Serializable{
 
-    private Long id;
+    private Long id; // u_id
 
-    private String name;
+    private String name; // u_name
 
-    private boolean gender;
+    private Boolean gender; //gender
 
-    private String nickname;
+    private String nickname; //nickname
 
-    private String password;
+    private String password; //u_pwd
 
-    private String phoneNumber;
+    private String phoneNumber; // u_phoneNum
 
-    private String email;
+    private String email; // u_email
 
-    private String description;
+    private String description; // u_description
 
-    private Date registDate;
+    private Date registDate; //regist_date
 
-    private String pic;
+    private String pic; //u_pic
 
-    private Date birthday;
+    private Date birthday; //birthday
 
-    private Integer workAge;
+    private Integer workAge; //work_age
 
-    private User higherUser;
+    private User higherUser; //parent_id
 
-    private Set<Role> roles;
+    private Set<Role> roles; //  role_user -> ru_id, r_id, u_id
 
-    private Department department;
+    private Department department;  // d_id
 
     public Long getId() {
         return id;
@@ -55,11 +55,11 @@ public class User implements Serializable{
         this.name = name;
     }
 
-    public boolean isGender() {
+    public Boolean isGender() {
         return gender;
     }
 
-    public void setGender(boolean gender) {
+    public void setGender(Boolean gender) {
         this.gender = gender;
     }
 
@@ -157,5 +157,26 @@ public class User implements Serializable{
 
     public void setDepartment(Department department) {
         this.department = department;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", gender=" + gender +
+                ", nickname='" + nickname + '\'' +
+                ", password='" + password + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", email='" + email + '\'' +
+                ", description='" + description + '\'' +
+                ", registDate=" + registDate +
+                ", pic='" + pic + '\'' +
+                ", birthday=" + birthday +
+                ", workAge=" + workAge +
+                ", higherUser=" + higherUser +
+                ", roles=" + roles +
+                ", department=" + department +
+                '}';
     }
 }

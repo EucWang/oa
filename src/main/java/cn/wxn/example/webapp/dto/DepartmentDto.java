@@ -18,7 +18,7 @@ public class DepartmentDto implements Serializable{
         this.departmentid = departmentid;
     }
 
-    //这个属性不属于原有的Department的数据
+    //这个属性不属于原有的Department的数据, 这个属性标识这个department的父部门
     private String departmentid;
 
     private Long id;

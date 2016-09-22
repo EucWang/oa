@@ -57,4 +57,15 @@ public class Department implements Serializable{
     public void setUsers(List<User> users) {
         this.users = users;
     }
+
+    @Override
+    public String toString() {
+        return "Department{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", parent=" + parent +
+                ", users=" + users +
+                '}';
+    }
 }

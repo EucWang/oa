@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataSource name="MySQL - oa_20160901@localhost">
+  <database-model serializer="dbm" rdbms="MYSQL" format-version="2.6">
+    <schema id="1" name="oa_20160901">
+      <visible>1</visible>
+    </schema>
+    <schema id="2" name="information_schema"/>
+    <table id="3" parent="1" name="department"/>
+    <table id="4" parent="1" name="role"/>
+    <table id="5" parent="1" name="role_user"/>
+    <table id="6" parent="1" name="user"/>
+    <column id="7" parent="3" name="d_id">
+      <mandatory>1</mandatory>
+      <data-type>bigint(20)|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="8" parent="3" name="d_name">
+      <mandatory>1</mandatory>
+      <data-type>varchar(255)|0</data-type>
+    </column>
+    <column id="9" parent="3" name="p_id">
+      <mandatory>1</mandatory>
+      <data-type>bigint(20)|0</data-type>
+    </column>
+    <column id="10" parent="3" name="d_description">
+      <data-type>varchar(255)|0</data-type>
+    </column>
+    <key id="11" parent="3" name="PRIMARY">
+      <columns>d_id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="12" parent="4" name="r_id">
+      <mandatory>1</mandatory>
+      <data-type>bigint(20)|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="13" parent="4" name="r_name">
+      <mandatory>1</mandatory>
+      <data-type>varchar(255)|0</data-type>
+    </column>
+    <column id="14" parent="4" name="r_description">
+      <data-type>varchar(255)|0</data-type>
+    </column>
+    <key id="15" parent="4" name="PRIMARY">
+      <columns>r_id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="16" parent="5" name="ru_id">
+      <mandatory>1</mandatory>
+      <data-type>bigint(20)|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="17" parent="5" name="r_id">
+      <mandatory>1</mandatory>
+      <data-type>bigint(20)|0</data-type>
+    </column>
+    <column id="18" parent="5" name="u_id">
+      <mandatory>1</mandatory>
+      <data-type>bigint(20)|0</data-type>
+    </column>
+    <key id="19" parent="5" name="PRIMARY">
+      <columns>ru_id</columns>
+      <primary>1</primary>
+    </key>
+    <column id="20" parent="6" name="u_id">
+      <mandatory>1</mandatory>
+      <data-type>bigint(20)|0</data-type>
+      <sequence-identity>1</sequence-identity>
+    </column>
+    <column id="21" parent="6" name="u_name">
+      <mandatory>1</mandatory>
+      <data-type>varchar(255)|0</data-type>
+    </column>
+    <column id="22" parent="6" name="u_pwd">
+      <mandatory>1</mandatory>
+      <data-type>varchar(255)|0</data-type>
+    </column>
+    <column id="23" parent="6" name="u_phoneNum">
+      <data-type>varchar(255)|0</data-type>
+    </column>
+    <column id="24" parent="6" name="u_email">
+      <data-type>varchar(255)|0</data-type>
+    </column>
+    <column id="25" parent="6" name="u_description">
+      <data-type>varchar(255)|0</data-type>
+    </column>
+    <column id="26" parent="6" name="regist_date">
+      <mandatory>1</mandatory>
+      <data-type>date|0</data-type>
+    </column>
+    <column id="27" parent="6" name="u_pic">
+      <data-type>varchar(255)|0</data-type>
+    </column>
+    <column id="28" parent="6" name="gender">
+      <mandatory>1</mandatory>
+      <data-type>smallint(6)|0</data-type>
+    </column>
+    <column id="29" parent="6" name="nickername">
+      <data-type>varchar(255)|0</data-type>
+    </column>
+    <column id="30" parent="6" name="d_id">
+      <mandatory>1</mandatory>
+      <data-type>bigint(20)|0</data-type>
+    </column>
+    <column id="31" parent="6" name="birthday">
+      <mandatory>1</mandatory>
+      <data-type>datetime|0</data-type>
+    </column>
+    <column id="32" parent="6" name="work_age">
+      <data-type>int(11)|0</data-type>
+    </column>
+    <column id="33" parent="6" name="parent_id">
+      <mandatory>1</mandatory>
+      <data-type>bigint(20)|0</data-type>
+    </column>
+    <key id="34" parent="6" name="PRIMARY">
+      <columns>u_id</columns>
+      <primary>1</primary>
+    </key>
+  </database-model>
+</dataSource>
