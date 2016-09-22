@@ -13,7 +13,7 @@ public class User implements Serializable{
 
     private String name; // u_name
 
-    private Boolean gender; //gender
+    private Integer gender; //gender
 
     private String nickname; //nickname
 
@@ -55,11 +55,11 @@ public class User implements Serializable{
         this.name = name;
     }
 
-    public Boolean isGender() {
+    public Integer isGender() {
         return gender;
     }
 
-    public void setGender(Boolean gender) {
+    public void setGender(Integer gender) {
         this.gender = gender;
     }
 

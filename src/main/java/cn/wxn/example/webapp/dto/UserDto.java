@@ -16,7 +16,7 @@ public class UserDto implements Serializable{
 
     private String name;
 
-    private boolean gender;
+    private Integer gender;
 
     private String nickname;
 
@@ -58,11 +58,11 @@ public class UserDto implements Serializable{
         this.name = name;
     }
 
-    public boolean isGender() {
+    public Integer isGender() {
         return gender;
     }
 
-    public void setGender(boolean gender) {
+    public void setGender(Integer gender) {
         this.gender = gender;
     }
 
@@ -160,5 +160,26 @@ public class UserDto implements Serializable{
 
     public void setDepartment(Department department) {
         this.department = department;
+    }
+
+    @Override
+    public String toString() {
+        return "UserDto{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", gender=" + gender +
+                ", nickname='" + nickname + '\'' +
+                ", password='" + password + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", email='" + email + '\'' +
+                ", description='" + description + '\'' +
+                ", registDate=" + registDate +
+                ", pic='" + pic + '\'' +
+                ", birthday=" + birthday +
+                ", workAge=" + workAge +
+                ", higherUser=" + higherUser +
+                ", roles=" + roles +
+                ", department=" + department +
+                '}';
     }
 }

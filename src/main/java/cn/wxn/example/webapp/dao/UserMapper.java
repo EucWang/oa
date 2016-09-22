@@ -1,5 +1,6 @@
 package cn.wxn.example.webapp.dao;
 
+import cn.wxn.example.webapp.entry.Role;
 import cn.wxn.example.webapp.entry.User;
 
 import java.util.List;
@@ -18,4 +19,18 @@ public interface UserMapper extends ICaptchaMapper {
     User findUserById(long id);
 
     List<User> findUsers();
+
+    Integer insertUserRole(User user);
+
+//    Integer updateUserRole(User user);
+
+    List<Role> findUserRolesByUserId(Long userid);
+
+    Integer deleteUserRolesByUserIdAndRoleId(User user);
+
+    Integer deleteUserRolesByUserId(Long id);
+
+    Integer findUserChildrenCount(long id);
+
+    Integer setUserChildrenParentNull(long id);
 }

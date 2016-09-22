@@ -3,6 +3,12 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.wxn.example.webapp.dao.UserMapper">
 
+    <resultMap id="roleResultMap" type="cn.wxn.example.webapp.entry.Role">
+        <id column="r_id" property="id"/>
+        <result column="r_name" property="name"/>
+        <result column="r_description" property="description"/>
+    </resultMap>
+
     <resultMap id="userResultMap" type="cn.wxn.example.webapp.entry.User">
         <id column="u_id" property="id"/>
         <result column="u_name" property="name"/>
@@ -22,19 +28,25 @@
 
         <association property="higherUser" javaType="cn.wxn.example.webapp.entry.User">
             <id column="parent_id" property="id"/>
-            <result column="u2name" property="u2name"/>
-            <result column="u2gender" property="u2gender"/>
-            <result column="u2nickername" property="u2nickername"/>
-            <result column="u2pwd" property="u2pwd"/>
-            <result column="u2phoneNum" property="u2phoneNum"/>
-            <result column="u2email" property="u2email"/>
-            <result column="u2description" property="u2description"/>
-            <result column="u2registDate" property="u2registDate"/>
-            <result column="u2pic" property="u2pic"/>
-            <result column="u2birthday" property="u2birthday"/>
-            <result column="u2workage" property="u2workage"/>
-            <result column="u2parentid" property="u2parentid"/>
-            <result column="u2did" property="u2did"/>
+            <result column="u2name" property="name"/>
+            <result column="u2gender" property="gender"/>
+            <result column="u2nickername" property="nickname"/>
+            <result column="u2pwd" property="password"/>
+            <result column="u2phoneNum" property="phoneNumber"/>
+            <result column="u2email" property="email"/>
+            <result column="u2description" property="description"/>
+            <result column="u2registDate" property="registDate"/>
+            <result column="u2pic" property="pic"/>
+            <result column="u2birthday" property="birthday"/>
+            <result column="u2workage" property="workAge"/>
+
+            <association property="department" javaType="cn.wxn.example.webapp.entry.Department">
+                <id column="u2did" property="id"/>
+            </association>
+
+            <association property="higherUser" javaType="cn.wxn.example.webapp.entry.User">
+                <id column="u2parentid" property="id"/>
+            </association>
         </association>
 
         <association property="department" javaType="cn.wxn.example.webapp.entry.Department">
@@ -44,7 +56,7 @@
             <result column="d1description" property="description"/>
 
             <association property="parent" javaType="cn.wxn.example.webapp.entry.Department">
-                <id column="d1pid" property="id" />
+                <id column="d1pid" property="id"/>
             </association>
         </association>
     </resultMap>
@@ -61,7 +73,14 @@
         <if test="gender != null">
             #{gender}
         </if>
-        , #{nickname}, #{password}, #{phoneNumber}, #{email}, #{description},
+        , #{nickname},
+        <if test="password != null">
+            #{password},
+        </if>
+        <if test="password == null">
+            '123456',
+        </if>
+        #{phoneNumber}, #{email}, #{description},
         now(), #{pic}, #{birthday}, #{workAge},
         <if test="department != null">
             #{department.id}
@@ -122,6 +141,17 @@
         where u_id = #{id};
     </update>
 
+    <select id="findUserChildrenCount" parameterType="long" resultType="int">
+        select count(*) from user
+        where  parent_id=#{id};
+    </select>
+
+    <update id="setUserChildrenParentNull" parameterType="long">
+        update user SET
+        parent_id = 0
+        where parent_id =#{id};
+    </update>
+
     <select id="findUserById" parameterType="long" resultMap="userResultMap">
         select
           u1.u_id,
@@ -163,7 +193,7 @@
         on u1.parent_id=u2.u_id
         LEFT JOIN  department d1
         on u1.d_id = d1.d_id
-        where u1.u_id = 5;
+        where u1.u_id = #{id};
     </select>
 
     <delete id="deleteUser" parameterType="long">
@@ -173,5 +203,36 @@
     <select id="findUsers" resultMap="userResultMap">
         select * from user;
     </select>
+
+    <insert id="insertUserRole" parameterType="cn.wxn.example.webapp.entry.User">
+        INSERT into role_user
+        (r_id, u_id)
+        VALUES
+        <foreach collection="roles" item="role" separator=",">
+            (#{role.id}, #{id})
+        </foreach>
+    </insert>
+
+    <select id="findUserRolesByUserId" parameterType="Long" resultMap="roleResultMap">
+         select *
+         from role
+         where r_id
+         in
+            (select r_id
+              from role_user
+              where u_id=#{_parameter});
+    </select>
+
+    <delete id="deleteUserRolesByUserIdAndRoleId" parameterType="cn.wxn.example.webapp.entry.User">
+        delete from role_user where u_id = #{id} and r_id in
+        <foreach collection="roles" item="role" open="(" close=")" separator=",">
+            #{role.id}
+        </foreach>
+    </delete>
+
+
+    <delete id="deleteUserRolesByUserId" parameterType="long">
+        delete from role_user where u_id = #{id};
+    </delete>
 
 </mapper>

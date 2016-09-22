@@ -1,6 +1,7 @@
 package cn.wxn.example.webapp.dao;
 
 import cn.wxn.example.webapp.AppBaseTest;
+import cn.wxn.example.webapp.entry.Role;
 import cn.wxn.example.webapp.entry.User;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +9,9 @@ import org.testng.annotations.Test;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by wangxn on 2016/9/21.
@@ -94,5 +97,40 @@ public class UserMapperTest extends AppBaseTest {
         for (User u : users) {
             logger.info("::: " + u.toString());
         }
+    }
+
+    @Test
+    public  void testInsertUserRole() throws Exception {
+        User user = new User();
+        user.setId(1L);
+
+        Set<Role> roles = new HashSet<Role>();
+        Role role = new Role();
+        role.setId(1L);
+        Role role1 = new Role();
+        role1.setId(3L);
+        roles.add(role);
+        roles.add(role1);
+        user.setRoles(roles);
+        userMapper.insertUserRole(user);
+    }
+
+    @Test
+    public void testSelectUserRolesByUserId() throws Exception {
+        List<Role> roles = userMapper.findUserRolesByUserId(5L);
+        logger.info("roles =======================");
+        for (Role role :roles) {
+            logger.info(role.toString());
+        }
+    }
+
+    @Test
+    public  void testDeleteUserRolesByUserIdAndRoleId() throws Exception {
+//        User user = new User();
+//        user.setId(1L);
+//
+//        Integer integer = userMapper.deleteUserRolesByUserIdAndRoleId(user);
+//        logger.info("testDeleteUserRolesByUserId");
+//        logger.info("result is ::: " + integer);
     }
 }
