@@ -20,5 +20,11 @@ public interface DepartmentService {
 
     DepartmentDto findDepartmentById(long id) throws Exception;
 
+    /**
+     *
+     * @param pid  如果取值-1,表示获取所有的部门,如果大于等于0,则,获取给定部门的子部门
+     * @return
+     * @throws Exception
+     */
     List<DepartmentDto> findDepartments(long pid) throws Exception;
 }

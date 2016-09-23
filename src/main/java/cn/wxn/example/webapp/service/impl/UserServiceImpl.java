@@ -39,6 +39,13 @@ public class UserServiceImpl implements UserService {
             return false;
         }
         try {
+
+            User userByName = userMapper.findUserByName(user.getName());
+            if (userByName != null) {
+                logger.info("insertUser fail, the username already exists.");
+                return  false;
+            }
+
             int i = userMapper.insertUser(user);
             if (i >= 0) {
                 Integer insertUserRoles = -1;

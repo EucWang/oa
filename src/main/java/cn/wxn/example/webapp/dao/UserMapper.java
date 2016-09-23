@@ -33,4 +33,6 @@ public interface UserMapper extends ICaptchaMapper {
     Integer findUserChildrenCount(long id);
 
     Integer setUserChildrenParentNull(long id);
+
+    User findUserByName(String name);
 }

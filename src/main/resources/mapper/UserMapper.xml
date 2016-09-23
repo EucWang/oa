@@ -235,4 +235,8 @@
         delete from role_user where u_id = #{id};
     </delete>
 
+
+    <select id="findUserByName" parameterType="String" resultMap="roleResultMap">
+         select * from user where u_name=#{_parameter};
+    </select>
 </mapper>

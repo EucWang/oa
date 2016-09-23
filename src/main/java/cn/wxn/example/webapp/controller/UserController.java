@@ -1,7 +1,12 @@
 package cn.wxn.example.webapp.controller;
 
+import cn.wxn.example.webapp.dto.DepartmentDto;
+import cn.wxn.example.webapp.dto.RoleDto;
 import cn.wxn.example.webapp.dto.UserDto;
+import cn.wxn.example.webapp.entry.Department;
 import cn.wxn.example.webapp.exception.ParamFailException;
+import cn.wxn.example.webapp.service.DepartmentService;
+import cn.wxn.example.webapp.service.RoleService;
 import cn.wxn.example.webapp.service.UserService;
 import cn.wxn.example.webapp.utils.StringUtils;
 import org.apache.log4j.Logger;
@@ -28,9 +33,24 @@ public class UserController {
     @Qualifier("userService")
     private UserService userService;
 
+    @Autowired
+    @Qualifier("departmentService")
+    private DepartmentService departmentService;
+
+    @Autowired
+    @Qualifier("roleService")
+    private RoleService roleService;
+
     @RequestMapping("/addUI")
-    public String addUI() throws Exception {
-        return "user/addUI";
+    public ModelAndView addUI(ModelAndView modelAndView) throws Exception {
+
+        List<DepartmentDto> departments = departmentService.findDepartments(-1L);
+        List<RoleDto> roles = roleService.findRoles();
+        modelAndView.addObject("departments", departments);
+        modelAndView.addObject("roles", roles);
+        modelAndView.setViewName("user/addUI");
+
+        return modelAndView;
     }
 
     @RequestMapping("/editUI/{id}")
