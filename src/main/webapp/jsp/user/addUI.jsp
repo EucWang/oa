@@ -16,6 +16,7 @@
     <script src="http://cdn.bootcss.com/prettify/r224/prettify.js"></script>
     <link href="${pageContext.request.contextPath}/css/datetimepicker.css" rel="stylesheet">
     <script src="${pageContext.request.contextPath}/js/bootstrap-datetimepicker.min.js"/>
+    <script src="${pageContext.request.contextPath}/js/locales/bootstrap-datetimepicker.zh-CN.js"/>
 </head>
 <body background="#fff">
 <div class="container  col-xs-8">
@@ -61,7 +62,6 @@
             </div>
         </div>
 
-
         <div class="form-group">
             <label for="email" class="col-sm-2 control-label">邮箱</label>
             <div class="col-sm-10">
@@ -69,18 +69,11 @@
             </div>
         </div>
 
-        <%--<div class="form-group">--%>
-        <%--<label for="birthday" class="col-sm-2 control-label">生日</label>--%>
-        <%--<div class="col-sm-10" id="datetimepicker" data-date="12-02-2012" data-date-format="dd-mm-yyyy">--%>
-        <%--<input class="col-sm-5 form-control" type="text" id="birthday" value="12-02-2012" readonly>--%>
-        <%--<span class="add-on"><i class="icon-th"></i></span>--%>
-        <%--</div>--%>
-        <%--</div>   --%>
         <div class="form-group">
             <label for="birthday" class="col-sm-2 control-label">生日</label>
             <div class="col-sm-10">
-                <input class="form_datetime1" size="16" type="text" id="birthday" value="12-02-2012" readonly>
-
+                <%--value="12-02-2012"--%>
+                <input class="form_datetime1 form-control" size="16" type="text" id="birthday"  readonly>
             </div>
         </div>
 
@@ -101,7 +94,26 @@
 </div>
 </body>
 <script>
-    $(".form_datetime1").datetimepicker({format: 'yyyy-mm-dd', forceParse: true});
+//    $.fn.datetimepicker.dates['zh'] = {
+//        days: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+//        daysShort: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+//        daysMin: ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"],
+//        months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+//        monthsShort: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+//        today: "Today"
+//    };
+    $(".form_datetime1").datetimepicker({
+        language: 'zh-CN',
+        minView: 'month',
+        autoclose: true,
+        todayHighlight:true,
+        format: 'yyyy-mm-dd',
+        forceParse: true,
+                todayBtn:true,
+        initialDate:new Date()
+
+    }
+    );
 </script>
 
 </html>

@@ -2,7 +2,9 @@ package cn.wxn.example.webapp.entry;
 
 import org.springframework.stereotype.Component;
 
+import java.io.LineNumberReader;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by wangxn on 2016/9/8.
@@ -15,6 +17,16 @@ public class Role implements Serializable {
     private String name;
 
     private String description;
+
+    private List<Privilege> privileges; //一对多
+
+    public List<Privilege> getPrivileges() {
+        return privileges;
+    }
+
+    public void setPrivileges(List<Privilege> privileges) {
+        this.privileges = privileges;
+    }
 
     public Long getId() {
         return id;

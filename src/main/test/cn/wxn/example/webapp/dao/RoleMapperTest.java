@@ -1,12 +1,14 @@
 package cn.wxn.example.webapp.dao;
 
 import cn.wxn.example.webapp.AppBaseTest;
+import cn.wxn.example.webapp.entry.Privilege;
 import cn.wxn.example.webapp.entry.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -66,15 +68,72 @@ public class RoleMapperTest extends AppBaseTest {
     @Test
     public void testFindRoles() throws Exception {
         List<Role> roles = roleMapper.findRoles();
-        if (roles != null && roles.size() > 0 ){
+        if (roles != null && roles.size() > 0) {
             logger.info("testFindRoles result is :");
             for (Role role : roles) {
                 logger.info(role.toString());
             }
-        }else  {
+        } else {
             logger.info("testFindRoles result is null or list is empty.");
         }
 
     }
 
+
+    @Test
+    public void insertRolePrivilege() throws Exception {
+        Role role = new Role();
+        role.setId(1L);
+        List<Privilege> privileges = new ArrayList<Privilege>();
+        Privilege p1 = new Privilege();
+        Privilege p2 = new Privilege();
+        Privilege p3 = new Privilege();
+        p1.setId(1L);
+        p2.setId(2L);
+        p3.setId(3L);
+
+        privileges.add(p1);
+        privileges.add(p2);
+        privileges.add(p3);
+
+        role.setPrivileges(privileges);
+
+        int i = roleMapper.insertRolePrivilege(role);
+
+        logger.info(":::::::::::::::::::::::::::::::::::::::::::::::::::::::::::");
+        logger.info("::::::::::::::::::::::::::::::::::::::::::::::::::::::::::");
+        logger.info("::::::::::::::::::::::::::::::::::::::::::::::::::::::::::");
+        logger.info("PrivilegeMapperTest  testFindPrivilegeById return value is :::::: ");
+        logger.info("" + i);
+        logger.info(":::::::::::::::::::::::::::::::::::::::::::::::::::::::::::");
+        logger.info(":::::::::::::::::::::::::::::::::::::::::::::::::::::::::::");
+    }
+
+    @Test
+    public void deleteRolePrivilege() throws  Exception {
+        Role role = new Role();
+        role.setId(1L);
+        List<Privilege> privileges = new ArrayList<Privilege>();
+        Privilege p1 = new Privilege();
+        Privilege p2 = new Privilege();
+        Privilege p3 = new Privilege();
+        p1.setId(1L);
+        p3.setId(3L);
+
+        privileges.add(p1);
+        privileges.add(p2);
+        privileges.add(p3);
+
+        role.setPrivileges(privileges);
+
+        int i = roleMapper.deleteRolePrivilege(role);
+
+        logger.info(":::::::::::::::::::::::::::::::::::::::::::::::::::::::::::");
+        logger.info("::::::::::::::::::::::::::::::::::::::::::::::::::::::::::");
+        logger.info("::::::::::::::::::::::::::::::::::::::::::::::::::::::::::");
+        logger.info("PrivilegeMapperTest  deleteRolePrivilege return value is :::::: ");
+        logger.info("" + i);
+        logger.info(":::::::::::::::::::::::::::::::::::::::::::::::::::::::::::");
+        logger.info(":::::::::::::::::::::::::::::::::::::::::::::::::::::::::::");
+    }
 }

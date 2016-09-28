@@ -19,4 +19,8 @@ public interface RoleMapper extends ICaptchaMapper {
     Role findRoleById(long id);
 
     List<Role> findRoles();
+
+    int insertRolePrivilege(Role role);
+
+    int deleteRolePrivilege(Role role);
 }

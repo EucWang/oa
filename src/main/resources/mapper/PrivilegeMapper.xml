@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.wxn.example.webapp.dao.PrivilegeMapper">
+
+    <resultMap id="privilegeResultMap" type="cn.wxn.example.webapp.entry.Privilege">
+        <id column="p_id" property="id"/>
+        <result column="p_name" property="name"/>
+        <result column="p_description" property="description"/>
+        <result column="p_url" property="url"/>
+        <result column="icon" property="icon"/>
+        <association property="parent" javaType="cn.wxn.example.webapp.entry.Privilege">
+            <id column="parent_id" property="id"/>
+        </association>
+    </resultMap>
+
+    <insert id="insertPrivilege" parameterType="cn.wxn.example.webapp.entry.Privilege" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into privilege(
+        <trim suffixOverrides=",">
+            <if test="name != null">
+                p_name,
+            </if>
+            <if test="description != null">
+                p_description,
+            </if>
+            <if test="url != null">
+                p_url,
+            </if>
+            <if test="parent != null and parent.id != null">
+                parent_id,
+            </if>
+            <if test="icon != null">
+                icon,
+            </if>
+        </trim>
+        ) values(
+        <trim>
+            <if test="name != null">
+                #{name},
+            </if>
+            <if test="description != null">
+                #{description},
+            </if>
+            <if test="url != null">
+                #{url},
+            </if>
+            <if test="icon != null">
+                #{icon},
+            </if>
+            <if test="parent != null and parent.id != null">
+                #{parent.id}
+            </if>
+        </trim>
+        );
+    </insert>
+
+    <update id="updatePrivilege" parameterType="cn.wxn.example.webapp.entry.Privilege">
+        update privilege SET
+        <trim suffixOverrides=",">
+            <if test="name != null">
+                p_name = #{name},
+            </if>
+            <if test="description != null">
+                p_description = #{description},
+            </if>
+            <if test="url != null">
+                p_url = #{url},
+            </if>
+            <if test="icon != null">
+                icon = #{icon},
+            </if>
+            <if test="parent != null and parent.id != null">
+                parent_id = #{parent.id}
+            </if>
+        </trim>
+        where p_id = #{id};
+    </update>
+
+    <select id="findPrivilegeById" parameterType="long" resultMap="privilegeResultMap">
+        select p_id, p_name, p_description, parent_id, p_url, icon from privilege
+        where p_id = #{id};
+    </select>
+
+    <select id="findPrivilegeByName" parameterType="String" resultMap="privilegeResultMap">
+        select p_id, p_name, p_description, parent_id, p_url, icon from privilege
+        where p_name = #{name};
+    </select>
+
+    <delete id="deletePrivilege" parameterType="long">
+        delete from privilege where p_id = #{id};
+    </delete>
+
+    <select id="findPrivileges" resultMap="privilegeResultMap">
+        select * from privilege;
+    </select>
+
+
+</mapper>

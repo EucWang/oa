@@ -11,15 +11,15 @@
 
     <insert id="insertRole" parameterType="cn.wxn.example.webapp.entry.Role" useGeneratedKeys="true" keyProperty="id">
         insert into role(
-                r_name
-            <if test="description != null">
-               , r_description
-            </if>
+        r_name
+        <if test="description != null">
+            , r_description
+        </if>
         ) values(
-                #{name}
-            <if test="description != null">
-               , #{description}
-            </if>
+        #{name}
+        <if test="description != null">
+            , #{description}
+        </if>
         );
     </insert>
 
@@ -49,5 +49,24 @@
     <select id="findRoles" resultMap="roleResultMap">
         select * from role;
     </select>
+
+    <insert id="insertRolePrivilege" parameterType="cn.wxn.example.webapp.entry.Role">
+        insert into role_privilege
+        (r_id, p_id)
+        VALUES
+        <foreach collection="privileges" item="privilege" separator=",">
+            (#{id}, #{privilege.id})
+        </foreach>;
+    </insert>
+
+    <delete id="deleteRolePrivilege" parameterType="cn.wxn.example.webapp.entry.Role">
+        delete from role_privilege
+        where r_id=#{id}
+        and p_id
+        IN
+        <foreach collection="privileges" item="privilege" open="(" close=")" separator=",">
+            #{privilege.id}
+        </foreach>;
+    </delete>
 
 </mapper>
