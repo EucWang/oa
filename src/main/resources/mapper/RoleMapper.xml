@@ -50,23 +50,4 @@
         select * from role;
     </select>
 
-    <insert id="insertRolePrivilege" parameterType="cn.wxn.example.webapp.entry.Role">
-        insert into role_privilege
-        (r_id, p_id)
-        VALUES
-        <foreach collection="privileges" item="privilege" separator=",">
-            (#{id}, #{privilege.id})
-        </foreach>;
-    </insert>
-
-    <delete id="deleteRolePrivilege" parameterType="cn.wxn.example.webapp.entry.Role">
-        delete from role_privilege
-        where r_id=#{id}
-        and p_id
-        IN
-        <foreach collection="privileges" item="privilege" open="(" close=")" separator=",">
-            #{privilege.id}
-        </foreach>;
-    </delete>
-
 </mapper>

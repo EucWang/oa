@@ -42,6 +42,12 @@
             <%--$('#modal_title').html("岗位删除");--%>
             <%--$('#modal_body').load("${pageContext.request.contextPath}/role/delUI/" + roleid);--%>
         }
+
+        function toEditPrivilegeUI(roleid) {
+            $('#addOrEditDialogUI').modal({backdrop: false, show: true});
+            $('#modal_title').html("权限修改");
+            $('#modal_body').load("${pageContext.request.contextPath}/role/editPrivilegeUI/" + roleid);
+        }
     </script>
 </head>
 <body>
@@ -60,6 +66,8 @@
                 <td>
                     <button type="button" class="btn btn-default" onclick="toEditUI(${role.id})">修改</button>
                     <button type="button" class="btn btn-default" onclick="toDel(${role.id})">删除</button>
+                    <button type="button" class="btn btn-default" onclick="toEditPrivilegeUI(${role.id})">修改权限</button>
+                </td>
             </tr>
         </c:forEach>
     </table>

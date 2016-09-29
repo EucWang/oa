@@ -1,11 +1,19 @@
 package cn.wxn.example.webapp.controller;
 
+import cn.wxn.example.webapp.dto.PrivilegeDto;
 import cn.wxn.example.webapp.dto.RoleDto;
+import cn.wxn.example.webapp.entry.Privilege;
 import cn.wxn.example.webapp.exception.ParamFailException;
+import cn.wxn.example.webapp.service.PrivilegeService;
 import cn.wxn.example.webapp.service.RoleService;
 import cn.wxn.example.webapp.service.impl.RoleServiceImpl;
 import cn.wxn.example.webapp.utils.StringUtils;
+import cn.wxn.example.webapp.utils.convertor.imple.GeneralBeanConvertor;
+import cn.wxn.example.webapp.utils.convertor.imple.SimpleBeanConvertor;
+import cn.wxn.example.webapp.vo.PrivilegeVo;
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.log4j.Logger;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -13,6 +21,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,9 +36,11 @@ public class RoleController {
     private Logger logger = Logger.getLogger(RoleController.class);
 
     @Autowired
-
     @Qualifier("roleService")
     private RoleService roleService;
+
+    @Autowired
+    private PrivilegeService privilegeService;
 
     @RequestMapping("/addUI")
     public String addUI() throws Exception {
@@ -114,5 +126,99 @@ public class RoleController {
             logger.info("update Role fail.");
         }
         return "redirect:/role/list";
+    }
+
+    @RequestMapping("/editPrivilegeUI/{roleid}")
+    public ModelAndView editPrivilegeUI(@PathVariable("roleid") String roleid, ModelAndView modelAndView) throws Exception {
+        List<PrivilegeDto> privileges = privilegeService.findPrivileges();
+        List<PrivilegeVo> privilegeVos = convertPrivilegesDtoToVo(privileges);
+
+        List<Long> rolePrivilegeIds = new ArrayList<Long>();
+        if (!StringUtils.isNullOrEmpty(roleid)) {
+            Long aLong = Long.valueOf(roleid);
+            List<PrivilegeDto> rolePrivileges = privilegeService.findRolePrivileges(aLong);
+            if (rolePrivileges != null && rolePrivileges.size() > 0) {
+                for (PrivilegeDto privilegeDto : rolePrivileges) {
+                    rolePrivilegeIds.add(privilegeDto.getId());
+                }
+            }
+        } else {
+            throw new ParamFailException("编辑岗位的权限时,传递的岗位的参数错误.");
+        }
+
+        for (Long id : rolePrivilegeIds) {
+            for (PrivilegeVo privilegeVo:privilegeVos){
+                if (id == privilegeVo.getId()) {
+                    privilegeVo.setChecked(true);
+                    break;
+                }
+            }
+        }
+
+        modelAndView.addObject("roleid", roleid);
+        modelAndView.addObject("privileges", privilegeVos);
+        modelAndView.setViewName("role/editPrivilegeUI");
+        return modelAndView;
+    }
+
+    @RequestMapping("/editPrivilege")
+    public String editPrivilege(String roleid, String privilegeIds, ModelAndView modelAndView) throws Exception {
+
+        if (StringUtils.isNullOrEmpty(roleid)) {
+            throw new ParamFailException("编辑岗位权限时,参数传递异常");
+        }
+
+        Long roleidLong = Long.valueOf(roleid);
+
+        RoleDto roleById = roleService.findRoleById(roleidLong);
+        if (roleById == null) {
+            throw new ParamFailException("编辑岗位权限时,岗位信息信息错误");
+        }
+
+        if (StringUtils.isNullOrEmpty(privilegeIds)) {
+            roleById.setPrivileges(null);
+        } else {
+            List<String> strings = StringUtils.split2List(privilegeIds, ",");
+            List<Privilege> privileges = new ArrayList<Privilege>();
+            if (strings != null && strings.size() > 0) {
+                for (String id : strings) {
+                    if (!StringUtils.isNullOrEmpty(id)) {
+                        Long idLong = Long.valueOf(id);
+                        Privilege privilege = new Privilege();
+                        privilege.setId(idLong);
+                        privileges.add(privilege);
+                    }
+                }
+            }
+
+            roleById.setPrivileges(privileges);
+            privilegeService.updateRolePrivileges(roleById);
+        }
+        return "redirect:/role/list";
+    }
+
+    private PrivilegeVo convertPrivilegeDtoToVo(PrivilegeDto privilegeDto) throws Exception {
+        if (privilegeDto == null) {
+            return null;
+        }
+
+        PrivilegeVo privilegeVo = new PrivilegeVo();
+        BeanUtils.copyProperties(privilegeDto, privilegeVo);
+        GeneralBeanConvertor convertor = new GeneralBeanConvertor();
+        convertor.convert(privilegeDto, privilegeVo);
+        privilegeVo.setChecked(false);
+        return privilegeVo;
+    }
+
+    private List<PrivilegeVo> convertPrivilegesDtoToVo(List<PrivilegeDto> privilegeDtos) throws Exception {
+        if (privilegeDtos == null || privilegeDtos.size() == 0) {
+            return null;
+        }
+
+        List<PrivilegeVo> privilegeVos = new ArrayList<PrivilegeVo>();
+        for (PrivilegeDto privilegeDto : privilegeDtos) {
+            privilegeVos.add(convertPrivilegeDtoToVo(privilegeDto));
+        }
+        return  privilegeVos;
     }
 }

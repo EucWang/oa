@@ -95,5 +95,39 @@
         select * from privilege;
     </select>
 
+    <select id="findRolePrivileges" parameterType="long" resultMap="privilegeResultMap">
+        select
+        rp.rp_id rprpid, rp.r_id rprid, rp.p_id rppid,
+        p.p_id, p.parent_id, p.p_name, p.p_description, p.p_url, p.icon
+        from
+        role_privilege rp
+        left join
+        privilege p
+        on
+        rp.p_id=p.p_id
+        where
+        rp.r_id=#{id};
+    </select>
+
+
+
+    <insert id="insertRolePrivileges" parameterType="cn.wxn.example.webapp.entry.Role">
+        insert into role_privilege
+        (r_id, p_id)
+        VALUES
+        <foreach collection="privileges" item="privilege" separator=",">
+            (#{id}, #{privilege.id})
+        </foreach>;
+    </insert>
+
+    <delete id="deleteRolePrivileges" parameterType="cn.wxn.example.webapp.entry.Role">
+        delete from role_privilege
+        where r_id=#{id}
+        and p_id
+        IN
+        <foreach collection="privileges" item="privilege" open="(" close=")" separator=",">
+            #{privilege.id}
+        </foreach>;
+    </delete>
 
 </mapper>

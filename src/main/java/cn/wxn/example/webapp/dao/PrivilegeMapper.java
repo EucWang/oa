@@ -1,6 +1,7 @@
 package cn.wxn.example.webapp.dao;
 
 import cn.wxn.example.webapp.entry.Privilege;
+import cn.wxn.example.webapp.entry.Role;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -21,4 +22,13 @@ public interface PrivilegeMapper extends ICaptchaMapper {
     List<Privilege> findPrivileges();
 
     Privilege findPrivilegeByName(@Param("name") String name);
+
+    //------------------------------------
+
+    List<Privilege> findRolePrivileges(long id);
+
+    boolean insertRolePrivileges(Role role);
+
+    boolean deleteRolePrivileges(Role role);
+
 }

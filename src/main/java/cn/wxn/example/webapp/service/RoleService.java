@@ -22,4 +22,5 @@ public interface RoleService {
     RoleDto findRoleById(long id) throws Exception;
 
     List<RoleDto> findRoles() throws Exception;
+
 }

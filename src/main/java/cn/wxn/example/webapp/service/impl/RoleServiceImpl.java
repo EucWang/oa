@@ -70,6 +70,7 @@ public class RoleServiceImpl implements RoleService {
         return false;
     }
 
+
     public boolean deleteRole(long id) throws Exception {
         if (id >= 0) {
             try {
@@ -99,6 +100,8 @@ public class RoleServiceImpl implements RoleService {
         return convertRolesToRoleDtos(roles);
     }
 
+//-------------------------------------------------------------------------
+
 
     private Role convertRoleDtoToRole(RoleDto roleDto) {
         if (roleDto == null) {
@@ -107,6 +110,7 @@ public class RoleServiceImpl implements RoleService {
 
         Role retVal = new Role();
         BeanUtils.copyProperties(roleDto, retVal);
+
         return retVal;
     }
 
