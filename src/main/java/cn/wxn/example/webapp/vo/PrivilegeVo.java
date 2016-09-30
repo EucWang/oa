@@ -1,5 +1,7 @@
 package cn.wxn.example.webapp.vo;
 
+import java.util.List;
+
 /**
  * Created by wangxn on 2016/9/28.
  */
@@ -18,6 +20,26 @@ public class PrivilegeVo {
     private String icon;
 
     private boolean checked;
+
+    private int level;
+
+    private List<PrivilegeVo> children;
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public List<PrivilegeVo> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<PrivilegeVo> children) {
+        this.children = children;
+    }
 
     public boolean isChecked() {
         return checked;

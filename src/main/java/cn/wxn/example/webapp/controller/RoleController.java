@@ -23,6 +23,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -130,13 +131,15 @@ public class RoleController {
 
     @RequestMapping("/editPrivilegeUI/{roleid}")
     public ModelAndView editPrivilegeUI(@PathVariable("roleid") String roleid, ModelAndView modelAndView) throws Exception {
+        //获取所有权限
         List<PrivilegeDto> privileges = privilegeService.findPrivileges();
         List<PrivilegeVo> privilegeVos = convertPrivilegesDtoToVo(privileges);
 
+        //获取岗位上赋予的权限的id列表
         List<Long> rolePrivilegeIds = new ArrayList<Long>();
         if (!StringUtils.isNullOrEmpty(roleid)) {
             Long aLong = Long.valueOf(roleid);
-            List<PrivilegeDto> rolePrivileges = privilegeService.findRolePrivileges(aLong);
+            List<PrivilegeDto> rolePrivileges = privilegeService.findRolePrivileges(aLong); //获取岗位上赋予的权限
             if (rolePrivileges != null && rolePrivileges.size() > 0) {
                 for (PrivilegeDto privilegeDto : rolePrivileges) {
                     rolePrivilegeIds.add(privilegeDto.getId());
@@ -146,8 +149,9 @@ public class RoleController {
             throw new ParamFailException("编辑岗位的权限时,传递的岗位的参数错误.");
         }
 
+        //为已经选择的权限设置选中属性,以便界面可以用这个属性回显数据
         for (Long id : rolePrivilegeIds) {
-            for (PrivilegeVo privilegeVo:privilegeVos){
+            for (PrivilegeVo privilegeVo : privilegeVos) {
                 if (id == privilegeVo.getId()) {
                     privilegeVo.setChecked(true);
                     break;
@@ -155,10 +159,78 @@ public class RoleController {
             }
         }
 
+        //建立权限之间的父子关系,并且设置上层级属性
+        for (int i = 0; i < privilegeVos.size(); i++) {
+            PrivilegeVo privilegeVoI = privilegeVos.get(i);
+            if (privilegeVoI.getParent() == null || privilegeVoI.getParent().getId() == 0) {
+                privilegeVoI.setParent(null);
+                privilegeVoI.setLevel(0);
+            }
+            for (int j = 0; j < privilegeVos.size(); j++) {
+                if (j == i) {
+                    continue;
+                }
+                PrivilegeVo privilegeVoJ = privilegeVos.get(j);
+                if (privilegeVoJ.getParent() != null && privilegeVoJ.getParent().getId() != 0) {
+                    if (privilegeVoJ.getParent().getId() == privilegeVoI.getId()) {
+                        privilegeVoJ.setParent(privilegeVoI);
+                        if (privilegeVoI.getChildren() == null) {
+                            privilegeVoI.setChildren(new ArrayList<PrivilegeVo>());
+                        }
+                        privilegeVoI.getChildren().add(privilegeVoJ);
+                        privilegeVoJ.setLevel(privilegeVoI.getLevel() + 1);
+                    }
+                }
+            }
+        }
+
+//        LinkedList<PrivilegeVo> privilegeVos1 = new LinkedList<PrivilegeVo>();
+//        privilegeVos1.addAll(privilegeVos);
+//        //对权限进行排序,方便界面显示
+//        sortPrvilegeVos(privilegeVos1, 0, 0);
+
+        LinkedList<PrivilegeVo> privilegeVos1 = new LinkedList<PrivilegeVo>();
+        for (PrivilegeVo privilegeVo : privilegeVos) {
+            if (privilegeVo.getParent() == null) {
+                privilegeVos1.add(privilegeVo);
+            }
+        }
+
         modelAndView.addObject("roleid", roleid);
-        modelAndView.addObject("privileges", privilegeVos);
+        modelAndView.addObject("privileges", privilegeVos1);
         modelAndView.setViewName("role/editPrivilegeUI");
         return modelAndView;
+    }
+
+    /**
+     * 对权限列表进行排序
+     * @param privilegeVos1 权限列表集合
+     * @param totalParentCount 总的上层的父权限个数
+     * @param level 上一层的父权限个数
+     */
+    private void sortPrvilegeVos(LinkedList<PrivilegeVo> privilegeVos1, int totalParentCount, int level) {
+        int parentCountTmp = 0;
+        for (int i = totalParentCount; i < privilegeVos1.size(); i++) {
+            PrivilegeVo privilegeVo = privilegeVos1.get(i);
+            if (privilegeVo.getParent() == null && level == 0) {
+                privilegeVos1.addFirst(privilegeVos1.remove(i));
+                parentCountTmp++;
+            } else {
+                if (privilegeVo.getLevel() == level) {
+                    int i1 = privilegeVos1.indexOf(privilegeVo.getParent()); //获取直系父权限的索引位置
+                    privilegeVos1.add(i1 + 1, privilegeVos1.remove(i));
+                    parentCountTmp++;
+                } else {
+                    continue;
+                }
+            }
+        }
+        totalParentCount += parentCountTmp;
+        if (totalParentCount < privilegeVos1.size()) {
+            sortPrvilegeVos(privilegeVos1, totalParentCount, level + 1);
+        }else {
+            return;
+        }
     }
 
     @RequestMapping("/editPrivilege")
@@ -204,9 +276,16 @@ public class RoleController {
 
         PrivilegeVo privilegeVo = new PrivilegeVo();
         BeanUtils.copyProperties(privilegeDto, privilegeVo);
-        GeneralBeanConvertor convertor = new GeneralBeanConvertor();
-        convertor.convert(privilegeDto, privilegeVo);
+
+        PrivilegeVo parent = new PrivilegeVo();
+        if (privilegeDto.getParent() != null) {
+            parent.setId(privilegeDto.getParent().getId());
+        } else {
+            parent = null;
+        }
+
         privilegeVo.setChecked(false);
+        privilegeVo.setParent(parent);
         return privilegeVo;
     }
 
@@ -219,6 +298,6 @@ public class RoleController {
         for (PrivilegeDto privilegeDto : privilegeDtos) {
             privilegeVos.add(convertPrivilegeDtoToVo(privilegeDto));
         }
-        return  privilegeVos;
+        return privilegeVos;
     }
 }
