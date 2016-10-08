@@ -177,11 +177,24 @@ public class DepartmentController {
         modelAndView.addObject("departments", departments);
         modelAndView.addObject("departmentid", pid);
 
+
+        //TODO 进入下级部门,不能正确的显示返回上级部门
         String grandParentId = null;
         if (pidLong > 0) {
             DepartmentDto parentDepartment = departmentService.findDepartmentById(pidLong);
-            grandParentId = parentDepartment.getParent().getId().toString();
-            modelAndView.addObject("grandparentid", grandParentId);
+            if (parentDepartment != null) {
+                DepartmentDto parent = parentDepartment.getParent();
+                if (parent != null) {
+                    Long id = parent.getId();
+                    if (id != null) {
+                        grandParentId = id.toString();
+                    }
+                }
+            }
+//            grandParentId = parentDepartment.getParent().getId().toString();
+            if (grandParentId != null) {
+                modelAndView.addObject("grandparentid", grandParentId);
+            }
         }
 
         return modelAndView;

@@ -20,6 +20,69 @@
     <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
     <script src="http://cdn.bootcss.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
 
+</head>
+<body>
+
+<c:import url="/nav-head"/>
+
+<div class="container-fluid">
+
+    <div class="row">
+
+        <c:import url="/nav-menu"/>
+
+        <div class="col-sm-10 main table-responsive">
+            <div class="table-responsive">
+                <table id="roles" class="table table-striped">
+                    <h2>岗位列表</h2>
+                    <tr class="table-row-cell">
+                        <th>岗位</th>
+                        <th>描述</th>
+                        <th>操作</th>
+                    </tr>
+                    <c:forEach items="${roles}" var="role">
+                        <tr>
+                            <td>${role.name}</td>
+                            <td>${role.description}</td>
+                            <td>
+                                <button type="button" class="btn btn-default" onclick="toEditUI(${role.id})">修改</button>
+                                <button type="button" class="btn btn-default" onclick="toDel(${role.id})">删除</button>
+                                <button type="button" class="btn btn-default" onclick="toEditPrivilegeUI(${role.id})">
+                                    修改权限
+                                </button>
+                            </td>
+                        </tr>
+                    </c:forEach>
+                </table>
+                <button type="button" class="btn btn-primary" id="btnAddUI" onclick="toAddUI()">新增</button>
+
+                <!-- Modal -->
+                <div class="modal fade" id="addOrEditDialogUI" tabindex="-1" role="dialog" aria-labelledby="modal_title"
+                     aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">
+                                    <span aria-hidden="true">&times;</span>
+                                    <span class="sr-only">Close</span>
+                                </button>
+                                <h4 class="modal-title" id="modal_title"></h4>
+                            </div>
+                            <%--<div class="modal-body" id="modal_body">--%>
+                            <%--</div>--%>
+                            <div class="modal-footer" id="modal_body">
+                                <%--<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>--%>
+                                <%--<button type="button" class="btn btn-primary">Save changes</button>--%>
+                            </div>
+                            <%--</div>--%>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <script>
         function toAddUI() {
             $('#addOrEditDialogUI').modal({backdrop: false, show: true});
@@ -49,52 +112,7 @@
             $('#modal_body').load("${pageContext.request.contextPath}/role/editPrivilegeUI/" + roleid);
         }
     </script>
-</head>
-<body>
-<div class="table-responsive">
-    <table id="roles" class="table table-striped">
-        <h2>岗位列表</h2>
-        <tr class="table-row-cell">
-            <th>岗位</th>
-            <th>描述</th>
-            <th>操作</th>
-        </tr>
-        <c:forEach items="${roles}" var="role">
-            <tr>
-                <td>${role.name}</td>
-                <td>${role.description}</td>
-                <td>
-                    <button type="button" class="btn btn-default" onclick="toEditUI(${role.id})">修改</button>
-                    <button type="button" class="btn btn-default" onclick="toDel(${role.id})">删除</button>
-                    <button type="button" class="btn btn-default" onclick="toEditPrivilegeUI(${role.id})">修改权限</button>
-                </td>
-            </tr>
-        </c:forEach>
-    </table>
-    <button type="button" class="btn btn-primary" id="btnAddUI" onclick="toAddUI()">新增</button>
-
-    <!-- Modal -->
-    <div class="modal fade" id="addOrEditDialogUI" tabindex="-1" role="dialog" aria-labelledby="modal_title"
-         aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">
-                        <span aria-hidden="true">&times;</span>
-                        <span class="sr-only">Close</span>
-                    </button>
-                    <h4 class="modal-title" id="modal_title"></h4>
-                </div>
-                <%--<div class="modal-body" id="modal_body">--%>
-                <%--</div>--%>
-                <div class="modal-footer" id="modal_body">
-                    <%--<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>--%>
-                    <%--<button type="button" class="btn btn-primary">Save changes</button>--%>
-                </div>
-                <%--</div>--%>
-            </div>
-        </div>
-    </div>
 </div>
+
 </body>
 </html>
