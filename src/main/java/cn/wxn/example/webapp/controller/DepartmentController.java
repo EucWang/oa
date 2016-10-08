@@ -83,6 +83,9 @@ public class DepartmentController {
             throw new ParamFailException("DepartmentController->method(editUI) parameter id convert to Long is null");
         }
 
+        logger.info("###########################");
+        logger.info("aLong ==== " + aLong);
+        logger.info("###########################");
         DepartmentDto departmentById = departmentService.findDepartmentById(aLong);
 
         modelAndView.addObject("pid", departmentid);

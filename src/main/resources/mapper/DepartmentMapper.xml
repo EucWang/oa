@@ -16,32 +16,37 @@
             keyProperty="id">
         insert into department(
         d_name,p_id
-        <if test="description != null">
-            , d_description
-        </if>
-        ) values(
-        #{name}
-        <if test="parent.id != null">
-            , #{parent.id}
-        </if>
-        <if test="parent.id == null">
-            , 0
-        </if>
-        <if test="description != null">
-            , #{description}
-        </if>
+
+        <trim prefixOverrides=",">
+            <if test="description != null">
+                , d_description
+            </if>
+            ) values(
+            #{name}
+            <if test="parent.id != null">
+                , #{parent.id}
+            </if>
+            <if test="parent.id == null">
+                , 0
+            </if>
+            <if test="description != null">
+                , #{description}
+            </if>
+        </trim>
         );
     </insert>
 
     <update id="updateDepartment" parameterType="cn.wxn.example.webapp.entry.Department">
         update department SET
         d_name = #{name}
-        <if test="description != null">
-            ,d_description = #{description}
-        </if>
-        <if test="parent.id != null">
-            ,p_id=#{parent.id}
-        </if>
+        <trim prefixOverrides=",">
+            <if test="description != null">
+                ,d_description = #{description}
+            </if>
+            <if test="parent.id != null">
+                ,p_id=#{parent.id}
+            </if>
+        </trim>
         where d_id = #{id};
     </update>
 
@@ -62,15 +67,12 @@
     </resultMap>
 
     <select id="findDepartmentById" parameterType="long" resultMap="departmentResultMap2">
---         select d_id, d_name, d_description, p_id from department
---         where d_id = #{id};
-
           select d1.d_id d1id, d1.d_name d1name, d1.p_id d1pid, d1.d_description d1description,
                  d2.d_id d2id, d2.d_name d2name, d2.p_id d2pid, d2.d_description d2description
           from department d1
           left join department d2
           on (d1.p_id=d2.d_id)
-          where d1.d_id=#{id};
+          where d1.d_id=#{id,jdbcType=BIGINT};
     </select>
 
     <!-- 级联删除 ,部门,以及部门的子部门,以及子部门的子部门... -->
