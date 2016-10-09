@@ -39,6 +39,10 @@ public class User implements Serializable{
 
     private Department department;  // d_id
 
+    public Integer getGender() {
+        return gender;
+    }
+
     public Long getId() {
         return id;
     }
@@ -55,9 +59,6 @@ public class User implements Serializable{
         this.name = name;
     }
 
-    public Integer isGender() {
-        return gender;
-    }
 
     public void setGender(Integer gender) {
         this.gender = gender;

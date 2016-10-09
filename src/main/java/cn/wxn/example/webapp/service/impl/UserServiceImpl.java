@@ -205,7 +205,6 @@ public class UserServiceImpl implements UserService {
         User retVal = new User();
         BeanUtils.copyProperties(userDto, retVal);
 
-
         Set<Role> roles = userDto.getRoles();
         if (roles != null && roles.size() > 0) {
             retVal.setRoles(roles);
@@ -233,7 +232,6 @@ public class UserServiceImpl implements UserService {
         }
         UserDto retVal = new UserDto();
         BeanUtils.copyProperties(user, retVal);
-
 
         Set<Role> roles = user.getRoles();
         if (roles != null && roles.size() > 0) {
@@ -263,8 +261,8 @@ public class UserServiceImpl implements UserService {
 
         List<UserDto> userDtos = new ArrayList<UserDto>();
         if (users != null && users.size() > 0) {
-            for (User User : users) {
-                userDtos.add(convertUserToUserDto(User));
+            for (User user : users) {
+                userDtos.add(convertUserToUserDto(user));
             }
         }
         return userDtos;

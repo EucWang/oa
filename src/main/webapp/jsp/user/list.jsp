@@ -39,12 +39,22 @@
                     <h2>雇员列表</h2>
                     <tr class="table-row-cell">
                         <th>雇员</th>
+                        <th>昵称</th>
+                        <th>手机号码</th>
+                        <th>性别</th>
                         <th>描述</th>
                         <th>操作</th>
                     </tr>
                     <c:forEach items="${users}" var="user">
                         <tr>
                             <td>${user.name}</td>
+                            <td>${user.nickname}</td>
+                            <td>${user.phoneNumber}</td>
+                            <td>
+                            <c:if test="${user.gender == -1}">保密</c:if>
+                            <c:if test="${user.gender == 0}">男</c:if>
+                            <c:if test="${user.gender == 1}">女</c:if>
+                            </td>
                             <td>${user.description}</td>
                             <td>
                                 <button type="button" class="btn btn-default" onclick="toEditUI(${user.id})">修改</button>

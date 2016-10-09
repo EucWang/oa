@@ -58,7 +58,7 @@ public class UserDto implements Serializable{
         this.name = name;
     }
 
-    public Integer isGender() {
+    public Integer getGender() {
         return gender;
     }
 

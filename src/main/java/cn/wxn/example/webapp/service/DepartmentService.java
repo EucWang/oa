@@ -26,5 +26,5 @@ public interface DepartmentService {
      * @return
      * @throws Exception
      */
-    List<DepartmentDto> findDepartments(long pid) throws Exception;
+    List<DepartmentDto> findDepartmentsByParentId(long pid) throws Exception;
 }

@@ -108,7 +108,7 @@ public class DepartmentServiceImpl implements DepartmentService {
         return DepartmentDto;
     }
 
-    public List<DepartmentDto> findDepartments(long pid) throws Exception {
+    public List<DepartmentDto> findDepartmentsByParentId(long pid) throws Exception {
         List<Department> Departments = departmentMapper.findDepartments(pid);
         return convertDepartmentsToDepartmentDtos(Departments);
     }

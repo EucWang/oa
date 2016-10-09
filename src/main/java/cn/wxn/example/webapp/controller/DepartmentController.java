@@ -36,7 +36,7 @@ public class DepartmentController {
 
 
         //获取所有的department的集合,然后为其赋值其上级部门的对象
-        List<DepartmentDto> departments = departmentService.findDepartments(-1L);
+        List<DepartmentDto> departments = departmentService.findDepartmentsByParentId(-1L);
         if (departments != null && departments.size() > 0) {
             Collections.sort(departments, new Comparator<DepartmentDto>() {
                 public int compare(DepartmentDto o1, DepartmentDto o2) {
@@ -93,7 +93,7 @@ public class DepartmentController {
         modelAndView.setViewName("/department/editUI");
 
 
-        List<DepartmentDto> departments = departmentService.findDepartments(-1L);
+        List<DepartmentDto> departments = departmentService.findDepartmentsByParentId(-1L);
         modelAndView.addObject("departments", departments);
         return modelAndView;
     }
@@ -173,16 +173,17 @@ public class DepartmentController {
             pidLong = 0L;
         }
 
-        List<DepartmentDto> departments = departmentService.findDepartments(pidLong);
+        //获取某个部门的下级所有子部门
+        List<DepartmentDto> departments = departmentService.findDepartmentsByParentId(pidLong);
         modelAndView.addObject("departments", departments);
         modelAndView.addObject("departmentid", pid);
 
-
-        //TODO 进入下级部门,不能正确的显示返回上级部门
-        String grandParentId = null;
+        String grandParentId = "0"; //默认是顶级部门
         if (pidLong > 0) {
+            //获取当前被点击的部门
             DepartmentDto parentDepartment = departmentService.findDepartmentById(pidLong);
             if (parentDepartment != null) {
+                //获取当前被点击的部门的上级部门
                 DepartmentDto parent = parentDepartment.getParent();
                 if (parent != null) {
                     Long id = parent.getId();

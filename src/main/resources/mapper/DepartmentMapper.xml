@@ -16,8 +16,6 @@
             keyProperty="id">
         insert into department(
         d_name,p_id
-
-        <trim prefixOverrides=",">
             <if test="description != null">
                 , d_description
             </if>
@@ -32,21 +30,18 @@
             <if test="description != null">
                 , #{description}
             </if>
-        </trim>
         );
     </insert>
 
     <update id="updateDepartment" parameterType="cn.wxn.example.webapp.entry.Department">
         update department SET
         d_name = #{name}
-        <trim prefixOverrides=",">
-            <if test="description != null">
-                ,d_description = #{description}
-            </if>
-            <if test="parent.id != null">
-                ,p_id=#{parent.id}
-            </if>
-        </trim>
+        <if test="description != null">
+            ,d_description = #{description}
+        </if>
+        <if test="parent.id != null">
+            ,p_id=#{parent.id}
+        </if>
         where d_id = #{id};
     </update>
 
@@ -88,7 +83,7 @@
         ;
     </select>
 
-    <select id="getLowerLevelDepartments" parameterType="long">
+    <select id="getLowerLevelDepartments" parameterType="long" resultType="int">
          select count(*) from department where p_id = #{id};
     </select>
 

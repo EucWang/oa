@@ -12,7 +12,7 @@
     <resultMap id="userResultMap" type="cn.wxn.example.webapp.entry.User">
         <id column="u_id" property="id"/>
         <result column="u_name" property="name"/>
-        <result column="gender" property="gender"/>
+        <result column="gender" property="gender" javaType="Integer" jdbcType="SMALLINT"/>
         <result column="nickername" property="nickname"/>
 
         <result column="u_pwd" property="password"/>
