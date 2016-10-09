@@ -1,5 +1,7 @@
 package cn.wxn.example.webapp.vo;
 
+import cn.wxn.example.webapp.entry.Department;
+import cn.wxn.example.webapp.utils.StringUtils;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
@@ -8,6 +10,8 @@ import java.util.Date;
  * Created by wangxn on 2016/10/9.
  */
 public class UserVo {
+
+    private String id;
 
     private String name;
 
@@ -27,6 +31,14 @@ public class UserVo {
     private Date birthday;
 
     private String department;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;
@@ -99,5 +111,17 @@ public class UserVo {
 
     public void setDepartment(String department) {
         this.department = department;
+    }
+
+    public Department convertToEmptyDepartment(){
+        Department department = null;
+        if (!StringUtils.isBlank(this.getDepartment())){
+            department = new Department();
+            Long aLong = Long.valueOf(this.getDepartment());
+            if (aLong != null) {
+                department.setId(aLong);
+            }
+        }
+        return department;
     }
 }

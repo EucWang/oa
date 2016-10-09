@@ -46,9 +46,9 @@ public class UserController {
     public ModelAndView addUI(ModelAndView modelAndView) throws Exception {
 
         List<DepartmentDto> departments = departmentService.findDepartmentsByParentId(-1L);
-        List<RoleDto> roles = roleService.findRoles();
         modelAndView.addObject("departments", departments);
-        modelAndView.addObject("roles", roles);
+//        List<RoleDto> roles = roleService.findRoles();
+//        modelAndView.addObject("roles", roles);
         modelAndView.setViewName("user/addUI");
 
         return modelAndView;
@@ -65,6 +65,9 @@ public class UserController {
         }
         UserDto userById = userService.findUserById(aLong);
         modelAndView.addObject("user", userById);
+
+        List<DepartmentDto> departments = departmentService.findDepartmentsByParentId(-1L);
+        modelAndView.addObject("departments", departments);
 
         modelAndView.setViewName("/user/editUI");
         return modelAndView;
@@ -88,15 +91,7 @@ public class UserController {
         userDto.setEmail(userVo.getEmail());
         userDto.setDescription(userVo.getDescription());
         userDto.setBirthday(userVo.getBirthday());
-        Department department = null;
-        if (!StringUtils.isBlank(userVo.getDepartment())){
-            department = new Department();
-            Long aLong = Long.valueOf(userVo.getDepartment());
-            if (aLong != null) {
-                department.setId(aLong);
-            }
-        }
-        userDto.setDepartment(department);
+        userDto.setDepartment(userVo.convertToEmptyDepartment());
 
         try {
             userService.insertUser(userDto);
@@ -105,6 +100,7 @@ public class UserController {
         }
         return "redirect:/user/list";
     }
+
 
     @RequestMapping("/del/{id}")
     public boolean del(@PathVariable("id") String id) throws Exception {
@@ -141,7 +137,29 @@ public class UserController {
     }
 
     @RequestMapping("/edit")
-    public String edit(UserDto userDto) throws Exception {
+    public String edit(UserVo userVo) throws Exception {
+
+        if (StringUtils.isBlank(userVo.getName()) || StringUtils.isBlank(userVo.getId())) {
+            throw new ParamFailException("userController->method(add)->parameter name is empty");
+        }
+
+        Long aLong1 = Long.valueOf(userVo.getId());
+        if (aLong1 == null || aLong1 < 0) {
+            throw new ParamFailException("userController->method(add)->parameter id is null or litter than zero.");
+        }
+
+        UserDto userDto = new UserDto();
+        userDto.setId(aLong1);
+        userDto.setName(userVo.getName());
+        userDto.setNickname(userVo.getNickname());
+        userDto.setGender(userVo.getGender());
+        userDto.setPassword(userVo.getPassword());
+        userDto.setPhoneNumber(userVo.getPhoneNum());
+        userDto.setEmail(userVo.getEmail());
+        userDto.setDescription(userVo.getDescription());
+        userDto.setBirthday(userVo.getBirthday());
+        userDto.setDepartment(userVo.convertToEmptyDepartment());
+
         if (null == userDto.getId()) {
             throw new ParamFailException("userController->method(edit)->parameter id is empty");
         }
@@ -156,4 +174,5 @@ public class UserController {
         }
         return "redirect:/user/list";
     }
+
 }

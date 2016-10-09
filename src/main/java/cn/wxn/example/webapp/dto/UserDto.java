@@ -2,6 +2,7 @@ package cn.wxn.example.webapp.dto;
 
 import cn.wxn.example.webapp.entry.Department;
 import cn.wxn.example.webapp.entry.Role;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -32,6 +33,7 @@ public class UserDto implements Serializable{
 
     private String pic;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date birthday;
 
     private Integer workAge;
