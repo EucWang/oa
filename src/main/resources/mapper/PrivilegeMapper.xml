@@ -9,6 +9,7 @@
         <result column="p_description" property="description"/>
         <result column="p_url" property="url"/>
         <result column="icon" property="icon"/>
+        <result column="is_menu" property="isMenu"/>
         <association property="parent" javaType="cn.wxn.example.webapp.entry.Privilege">
             <id column="parent_id" property="id"/>
         </association>
@@ -33,6 +34,9 @@
             <if test="icon != null">
                 icon,
             </if>
+            <if test="isMenu != null">
+                is_menu,
+            </if>
         </trim>
         ) values(
         <trim>
@@ -50,6 +54,9 @@
             </if>
             <if test="parent != null and parent.id != null">
                 #{parent.id}
+            </if>
+            <if test="isMenu != null">
+                #{isMenu},
             </if>
         </trim>
         );
@@ -73,17 +80,20 @@
             <if test="parent != null and parent.id != null">
                 parent_id = #{parent.id}
             </if>
+            <if test="isMenu != null">
+                is_menu,
+            </if>
         </trim>
         where p_id = #{id};
     </update>
 
     <select id="findPrivilegeById" parameterType="long" resultMap="privilegeResultMap">
-        select p_id, p_name, p_description, parent_id, p_url, icon from privilege
+        select p_id, p_name, p_description, parent_id, p_url, icon, is_menu from privilege
         where p_id = #{id};
     </select>
 
     <select id="findPrivilegeByName" parameterType="String" resultMap="privilegeResultMap">
-        select p_id, p_name, p_description, parent_id, p_url, icon from privilege
+        select p_id, p_name, p_description, parent_id, p_url, icon, is_menu from privilege
         where p_name = #{name};
     </select>
 
@@ -98,7 +108,7 @@
     <select id="findRolePrivileges" parameterType="long" resultMap="privilegeResultMap">
         select
         rp.rp_id rprpid, rp.r_id rprid, rp.p_id rppid,
-        p.p_id, p.parent_id, p.p_name, p.p_description, p.p_url, p.icon
+        p.p_id, p.parent_id, p.p_name, p.p_description, p.p_url, p.icon, p.is_menu
         from
         role_privilege rp
         left join

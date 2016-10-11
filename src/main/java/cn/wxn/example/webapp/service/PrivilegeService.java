@@ -3,6 +3,7 @@ package cn.wxn.example.webapp.service;
 import cn.wxn.example.webapp.dto.PrivilegeDto;
 import cn.wxn.example.webapp.dto.RoleDto;
 import cn.wxn.example.webapp.entry.Role;
+import cn.wxn.example.webapp.vo.PrivilegeVo;
 
 import java.util.List;
 
@@ -19,4 +20,5 @@ public interface PrivilegeService {
 
     boolean updateRolePrivileges(RoleDto roleDto) throws Exception;
 
+    List<PrivilegeVo> findFullRootPrivileges() throws Exception;
 }

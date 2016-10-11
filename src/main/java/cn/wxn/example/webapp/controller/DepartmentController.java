@@ -1,9 +1,12 @@
 package cn.wxn.example.webapp.controller;
 
 import cn.wxn.example.webapp.dto.DepartmentDto;
+import cn.wxn.example.webapp.entry.Privilege;
 import cn.wxn.example.webapp.exception.ParamFailException;
 import cn.wxn.example.webapp.service.DepartmentService;
+import cn.wxn.example.webapp.service.PrivilegeService;
 import cn.wxn.example.webapp.utils.StringUtils;
+import cn.wxn.example.webapp.vo.PrivilegeVo;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -29,6 +32,9 @@ public class DepartmentController {
     @Autowired
     @Qualifier("departmentService")
     private DepartmentService departmentService;
+
+    @Autowired
+    private PrivilegeService privilegeService;
 
     @RequestMapping("/addUI")
     public ModelAndView addUI(ModelAndView modelAndView, String departmentid) throws Exception {
@@ -197,6 +203,11 @@ public class DepartmentController {
                 modelAndView.addObject("grandparentid", grandParentId);
             }
         }
+
+
+        List<PrivilegeVo> fullPrivileges = privilegeService.findFullRootPrivileges();
+
+        modelAndView.addObject("privileges", fullPrivileges);
 
         return modelAndView;
     }

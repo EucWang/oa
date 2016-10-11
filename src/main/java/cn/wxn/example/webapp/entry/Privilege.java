@@ -19,7 +19,17 @@ public class Privilege {
 
     private String icon;
 
+    private Integer isMenu;
+
     private List<Role> roles; //一对多
+
+    public Integer getIsMenu() {
+        return isMenu;
+    }
+
+    public void setIsMenu(Integer isMenu) {
+        this.isMenu = isMenu;
+    }
 
     public List<Role> getRoles() {
         return roles;
@@ -86,6 +96,7 @@ public class Privilege {
                 ", description='" + description + '\'' +
                 ", url='" + url + '\'' +
                 ", icon='" + icon + '\'' +
+                ", isMenu=" + isMenu +
                 ", roles=" + roles +
                 '}';
     }

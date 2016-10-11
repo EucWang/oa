@@ -1,7 +1,10 @@
 package cn.wxn.example.webapp.dto;
 
 import cn.wxn.example.webapp.entry.Role;
+import cn.wxn.example.webapp.vo.PrivilegeVo;
+import org.springframework.beans.BeanUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,6 +25,16 @@ public class PrivilegeDto {
     private String icon;
 
     private List<Role> roles; //一对多
+
+    private Integer isMenu;
+
+    public Integer getIsMenu() {
+        return isMenu;
+    }
+
+    public void setIsMenu(Integer isMenu) {
+        this.isMenu = isMenu;
+    }
 
     public List<Role> getRoles() {
         return roles;
@@ -91,4 +104,38 @@ public class PrivilegeDto {
                 ", roles=" + roles +
                 '}';
     }
+
+    public static List<PrivilegeVo> convertPrivilegesDtoToVo(List<PrivilegeDto> privilegeDtos) throws Exception {
+        if (privilegeDtos == null || privilegeDtos.size() == 0) {
+            return null;
+        }
+
+        List<PrivilegeVo> privilegeVos = new ArrayList<PrivilegeVo>();
+        for (PrivilegeDto privilegeDto : privilegeDtos) {
+            privilegeVos.add(convertPrivilegeDtoToVo(privilegeDto));
+        }
+        return privilegeVos;
+    }
+
+
+    public static PrivilegeVo convertPrivilegeDtoToVo(PrivilegeDto privilegeDto) throws Exception {
+        if (privilegeDto == null) {
+            return null;
+        }
+
+        PrivilegeVo privilegeVo = new PrivilegeVo();
+        BeanUtils.copyProperties(privilegeDto, privilegeVo);
+
+        PrivilegeVo parent = new PrivilegeVo();
+        if (privilegeDto.getParent() != null) {
+            parent.setId(privilegeDto.getParent().getId());
+        } else {
+            parent = null;
+        }
+
+        privilegeVo.setChecked(false);
+        privilegeVo.setParent(parent);
+        return privilegeVo;
+    }
+
 }

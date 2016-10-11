@@ -10,16 +10,14 @@ import cn.wxn.example.webapp.entry.Privilege;
 import cn.wxn.example.webapp.exception.ParamFailException;
 import cn.wxn.example.webapp.service.PrivilegeService;
 import cn.wxn.example.webapp.utils.StringUtils;
+import cn.wxn.example.webapp.vo.PrivilegeVo;
 import org.apache.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by wangxn on 2016/9/12.
@@ -45,6 +43,57 @@ public class PrivilegeServiceImpl implements PrivilegeService {
     public List<PrivilegeDto> findPrivileges() throws Exception {
         List<Privilege> privileges = privilegeMapper.findPrivileges();
         return convertPrivilegesToPrivilegeDtos(privileges);
+    }
+
+    /**
+     * 获取全部权限,并且 设置好权限之间的上下级关系
+     * @return
+     * @throws Exception
+     */
+    public List<PrivilegeVo> findFullRootPrivileges() throws  Exception {
+
+        //获取所有权限
+        List<PrivilegeDto> privileges = findPrivileges();
+        List<PrivilegeVo> privilegeVos = PrivilegeDto.convertPrivilegesDtoToVo(privileges);
+
+        //建立权限之间的父子关系,并且设置上层级属性
+        for (int i = 0; i < privilegeVos.size(); i++) {
+            PrivilegeVo privilegeVoI = privilegeVos.get(i);
+            if (privilegeVoI.getParent() == null || privilegeVoI.getParent().getId() == 0) {
+                privilegeVoI.setParent(null);
+                privilegeVoI.setLevel(0);
+            }
+            for (int j = 0; j < privilegeVos.size(); j++) {
+                if (j == i) {
+                    continue;
+                }
+                PrivilegeVo privilegeVoJ = privilegeVos.get(j);
+                if (privilegeVoJ.getParent() != null && privilegeVoJ.getParent().getId() != 0) {
+                    if (privilegeVoJ.getParent().getId() == privilegeVoI.getId()) {
+                        privilegeVoJ.setParent(privilegeVoI);
+                        if (privilegeVoI.getChildren() == null) {
+                            privilegeVoI.setChildren(new ArrayList<PrivilegeVo>());
+                        }
+                        privilegeVoI.getChildren().add(privilegeVoJ);
+                        privilegeVoJ.setLevel(privilegeVoI.getLevel() + 1);
+                    }
+                }
+            }
+        }
+
+//        LinkedList<PrivilegeVo> privilegeVos1 = new LinkedList<PrivilegeVo>();
+//        privilegeVos1.addAll(privilegeVos);
+//        //对权限进行排序,方便界面显示
+//        sortPrvilegeVos(privilegeVos1, 0, 0);
+
+        LinkedList<PrivilegeVo> privilegeVos1 = new LinkedList<PrivilegeVo>();
+        for (PrivilegeVo privilegeVo : privilegeVos) {
+            if (privilegeVo.getParent() == null) {
+                privilegeVos1.add(privilegeVo);
+            }
+        }
+
+        return privilegeVos1;
     }
 
     public List<PrivilegeDto> findRolePrivileges(long roleid) throws Exception {

@@ -23,13 +23,13 @@
 </head>
 <body>
 
-<c:import url="/nav-head"/>
+<c:import url="/nav/navhead"/>
 
 <div class="container-fluid">
 
     <div class="row">
 
-        <c:import url="/nav-menu"/>
+        <c:import url="/nav/navmenu"/>
 
         <div class="col-sm-10 main table-responsive">
             <div class="table-responsive">

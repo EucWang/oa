@@ -87,3 +87,13 @@ update privilege
 set
 parent_id = 17
 where p_id=24;
+
+//2016/10//1日新增
+//为privilege增加is_menu字段, 为1表示是菜单显示,
+alter table `privilege` add column `is_menu` int(1) null default '0' after `icon`;
+update table `privilege` set is_menu =1;
+update `privilege` set is_menu=0 where p_id  >= 5 and p_id <= 16;
+
+update privilege set p_url='/role/list' where p_id=2;
+update privilege set p_url='/department/list' where p_id=3;
+update privilege set p_url='/user/list' where p_id=4;

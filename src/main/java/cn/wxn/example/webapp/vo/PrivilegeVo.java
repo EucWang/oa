@@ -23,7 +23,17 @@ public class PrivilegeVo {
 
     private int level;
 
+    private int isMenu;
+
     private List<PrivilegeVo> children;
+
+    public int getIsMenu() {
+        return isMenu;
+    }
+
+    public void setIsMenu(int isMenu) {
+        this.isMenu = isMenu;
+    }
 
     public int getLevel() {
         return level;

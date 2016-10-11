@@ -4,11 +4,14 @@ import cn.wxn.example.webapp.dto.DepartmentDto;
 import cn.wxn.example.webapp.dto.RoleDto;
 import cn.wxn.example.webapp.dto.UserDto;
 import cn.wxn.example.webapp.entry.Department;
+import cn.wxn.example.webapp.entry.Privilege;
 import cn.wxn.example.webapp.exception.ParamFailException;
 import cn.wxn.example.webapp.service.DepartmentService;
+import cn.wxn.example.webapp.service.PrivilegeService;
 import cn.wxn.example.webapp.service.RoleService;
 import cn.wxn.example.webapp.service.UserService;
 import cn.wxn.example.webapp.utils.StringUtils;
+import cn.wxn.example.webapp.vo.PrivilegeVo;
 import cn.wxn.example.webapp.vo.UserVo;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +44,9 @@ public class UserController {
     @Autowired
     @Qualifier("roleService")
     private RoleService roleService;
+
+    @Autowired
+    private PrivilegeService privilegeService;
 
     @RequestMapping("/addUI")
     public ModelAndView addUI(ModelAndView modelAndView) throws Exception {
@@ -133,6 +139,11 @@ public class UserController {
             modelAndView.addObject("users", users);
         }
         modelAndView.setViewName("user/list");
+
+        List<PrivilegeVo> fullPrivileges = privilegeService.findFullRootPrivileges();
+
+        modelAndView.addObject("privileges", fullPrivileges);
+
         return modelAndView;
     }
 
