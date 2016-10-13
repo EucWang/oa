@@ -20,4 +20,7 @@ public interface UserService {
     UserDto findUserById(long id) throws Exception;
 
     List<UserDto> findUsers() throws Exception;
+
+    UserDto findUserByNameAndPwd(String username, String password) throws Exception;
 }
+

@@ -13,12 +13,16 @@ import cn.wxn.example.webapp.service.UserService;
 import cn.wxn.example.webapp.utils.StringUtils;
 import cn.wxn.example.webapp.vo.PrivilegeVo;
 import cn.wxn.example.webapp.vo.UserVo;
+import cn.wxn.example.webapp.vo.VoResult;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
@@ -29,6 +33,7 @@ import java.util.List;
  */
 @Controller
 @RequestMapping("/user")
+@SessionAttributes("userToken")
 public class UserController {
 
     private Logger logger = Logger.getLogger(UserController.class);
@@ -47,6 +52,33 @@ public class UserController {
 
     @Autowired
     private PrivilegeService privilegeService;
+
+
+    @RequestMapping("/loginUI")
+    public String loginUI() throws Exception {
+        return "user/loginUI";
+    }
+
+    @RequestMapping("/login")
+    @ResponseBody
+    public VoResult login(String username, String password, String rememberme, ModelMap modelMap) throws Exception {
+        UserDto userByNameAndPwd = userService.findUserByNameAndPwd(username, password);
+            VoResult<UserDto> voResult = new VoResult<UserDto>();
+        if (userByNameAndPwd != null) {
+            modelMap.addAttribute("userToken", "oa_" + userByNameAndPwd.getId() + "_" + System.currentTimeMillis());
+
+            //登录成功
+            voResult.setCode("OA0001");
+            voResult.setMsg("success");
+            voResult.setData(userByNameAndPwd);
+            return voResult;
+        } else {
+            //登录失败
+            voResult.setCode("OA0000");
+            voResult.setMsg("用户名或者密码错误,请重试");
+            return voResult;
+        }
+    }
 
     @RequestMapping("/addUI")
     public ModelAndView addUI(ModelAndView modelAndView) throws Exception {

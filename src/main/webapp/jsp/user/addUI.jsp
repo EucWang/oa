@@ -22,6 +22,8 @@
 
     <!-- 表单校验的js插件, bootstrapValidator -->
     <link href="${pageContext.request.contextPath}/css/bootstrapValidator.min.css"/>
+    <script src="${pageContext.request.contextPath}/js/bootstrapValidator.min.js"/>
+
 </head>
 <body background="#fff">
 <div class="container" style="width:auto;">
@@ -109,7 +111,7 @@
         </div>
     </form>
 </div>
-<script src="${pageContext.request.contextPath}/js/bootstrapValidator.min.js"/>
 </body>
 
+<script src="${pageContext.request.contextPath}/js/mime/mime.js"/>
 </html>

@@ -37,9 +37,38 @@ $(".form-validate").bootstrapValidator(
                     }
                 }
             },
+            username: {
+                validators: {
+                    notEmpty: {
+                        message: '用户名不能为空'
+                    },
+                    stringLength: {
+                        min: 6,
+                        max: 64,
+                        message: '用户名长度在6到64之间'
+                    },
+                    regexp: {
+                        regexp: /^[a-zA-Z0-9_]+$/,
+                        message: '用户名必须由字母数组和下划线组成'
+                    }
+                }
+            },
             gender: {},
             nickname: {},
-            password: {},
+            password: {
+                notEmpty: {
+                    message: '密码不能为空'
+                },
+                stringLength: {
+                    min: 6,
+                    max: 32,
+                    message: '密码长度在6到64之间'
+                },
+                regexp:{
+                    regexp:/^[a-zA-Z0-9_]{6,32}$/,
+                    message: '密码必须由字母数组下划线组成'
+                }
+            },
             phoneNum: {
                 validators: {
                     notEmpty: {

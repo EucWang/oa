@@ -196,6 +196,26 @@
         where u1.u_id = #{id};
     </select>
 
+    <select id="findUserByNameAndPwd" parameterType="cn.wxn.example.webapp.entry.User" resultMap="userResultMap">
+         select
+          u_id,
+          u_name,
+          gender,
+          nickername,
+          u_pwd,
+          u_phoneNum,
+          u_email,
+          u_description,
+          regist_date,
+          u_pic,
+          birthday,
+          work_age,
+          parent_id,
+          d_id
+          from USER
+          where u_name=#{name} and u_pwd=#{password};
+    </select>
+
     <delete id="deleteUser" parameterType="long">
         delete from user where u_id = #{id};
     </delete>

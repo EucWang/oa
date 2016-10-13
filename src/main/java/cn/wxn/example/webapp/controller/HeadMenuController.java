@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Iterator;
 import java.util.List;
 
@@ -25,8 +26,10 @@ public class HeadMenuController {
     private PrivilegeService privilegeService;
 
     @RequestMapping("/navhead")
-    public String navHead() {
-        return "nav/navhead";
+    public ModelAndView navHead(ModelAndView modelAndView, HttpServletRequest request) {
+        modelAndView.addObject("username", request.getAttribute("username"));
+        modelAndView.setViewName("nav/navhead");
+        return modelAndView;
     }
 
     @RequestMapping("/navmenu")

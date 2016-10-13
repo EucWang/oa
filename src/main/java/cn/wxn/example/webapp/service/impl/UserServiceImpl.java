@@ -196,6 +196,17 @@ public class UserServiceImpl implements UserService {
         return convertUsersToUserDtos(Users);
     }
 
+    public UserDto findUserByNameAndPwd(String username, String password) throws Exception  {
+        User user = new User();
+        user.setName(username);
+        user.setPassword(password);
+        User userByNameAndPwd = userMapper.findUserByNameAndPwd(user);
+        if (userByNameAndPwd != null) {
+           return convertUserToUserDto(userByNameAndPwd);
+        }
+        return null;
+    }
+
 
     private User convertUserDtoToUser(UserDto userDto) {
         if (userDto == null) {
