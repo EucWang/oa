@@ -5,7 +5,9 @@ import cn.wxn.example.webapp.vo.PrivilegeVo;
 import org.springframework.beans.BeanUtils;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by wangxn on 2016/9/28.
@@ -111,6 +113,18 @@ public class PrivilegeDto {
         }
 
         List<PrivilegeVo> privilegeVos = new ArrayList<PrivilegeVo>();
+        for (PrivilegeDto privilegeDto : privilegeDtos) {
+            privilegeVos.add(convertPrivilegeDtoToVo(privilegeDto));
+        }
+        return privilegeVos;
+    }
+
+    public static Set<PrivilegeVo> convertPrivilegesDtoToVo(Set<PrivilegeDto> privilegeDtos) throws Exception {
+        if (privilegeDtos == null || privilegeDtos.size() == 0) {
+            return null;
+        }
+
+        Set<PrivilegeVo> privilegeVos = new HashSet<PrivilegeVo>();
         for (PrivilegeDto privilegeDto : privilegeDtos) {
             privilegeVos.add(convertPrivilegeDtoToVo(privilegeDto));
         }

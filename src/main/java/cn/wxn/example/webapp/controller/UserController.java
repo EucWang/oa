@@ -80,13 +80,19 @@ public class UserController {
         }
     }
 
+    @RequestMapping("/unlogin")
+    public String unlogin(ModelMap modelMap) {
+        modelMap.addAttribute("userToken", "");
+        return "redirect:loginUI";
+    }
+
     @RequestMapping("/addUI")
     public ModelAndView addUI(ModelAndView modelAndView) throws Exception {
 
         List<DepartmentDto> departments = departmentService.findDepartmentsByParentId(-1L);
         modelAndView.addObject("departments", departments);
-//        List<RoleDto> roles = roleService.findRoles();
-//        modelAndView.addObject("roles", roles);
+        List<RoleDto> roles = roleService.findRoles();
+        modelAndView.addObject("roles", roles);
         modelAndView.setViewName("user/addUI");
 
         return modelAndView;
@@ -106,12 +112,12 @@ public class UserController {
 
         List<DepartmentDto> departments = departmentService.findDepartmentsByParentId(-1L);
         modelAndView.addObject("departments", departments);
+        List<RoleDto> roles = roleService.findRoles();
+        modelAndView.addObject("roles", roles);
 
         modelAndView.setViewName("/user/editUI");
         return modelAndView;
     }
-
-
 
     @RequestMapping("/add")
     public String add(UserVo userVo) throws Exception {
@@ -119,17 +125,7 @@ public class UserController {
             throw new ParamFailException("userController->method(add)->parameter name is empty");
         }
 
-        UserDto userDto = new UserDto();
-
-        userDto.setName(userVo.getName());
-        userDto.setNickname(userVo.getNickname());
-        userDto.setGender(userVo.getGender());
-        userDto.setPassword(userVo.getPassword());
-        userDto.setPhoneNumber(userVo.getPhoneNum());
-        userDto.setEmail(userVo.getEmail());
-        userDto.setDescription(userVo.getDescription());
-        userDto.setBirthday(userVo.getBirthday());
-        userDto.setDepartment(userVo.convertToEmptyDepartment());
+        UserDto userDto = userVo.convertUserVoToUserDto();
 
         try {
             userService.insertUser(userDto);
@@ -138,7 +134,6 @@ public class UserController {
         }
         return "redirect:/user/list";
     }
-
 
     @RequestMapping("/del/{id}")
     public boolean del(@PathVariable("id") String id) throws Exception {
@@ -156,7 +151,6 @@ public class UserController {
             logger.info("delete user fail.");
         }
         return b;
-//        return "redirect:/user/list";
     }
 
     @RequestMapping("/list")
@@ -186,29 +180,16 @@ public class UserController {
             throw new ParamFailException("userController->method(add)->parameter name is empty");
         }
 
-        Long aLong1 = Long.valueOf(userVo.getId());
-        if (aLong1 == null || aLong1 < 0) {
+        UserDto userDto = userVo.convertUserVoToUserDto();
+
+        if (userDto.getId() == null || userDto.getId() < 0) {
             throw new ParamFailException("userController->method(add)->parameter id is null or litter than zero.");
         }
 
-        UserDto userDto = new UserDto();
-        userDto.setId(aLong1);
-        userDto.setName(userVo.getName());
-        userDto.setNickname(userVo.getNickname());
-        userDto.setGender(userVo.getGender());
-        userDto.setPassword(userVo.getPassword());
-        userDto.setPhoneNumber(userVo.getPhoneNum());
-        userDto.setEmail(userVo.getEmail());
-        userDto.setDescription(userVo.getDescription());
-        userDto.setBirthday(userVo.getBirthday());
-        userDto.setDepartment(userVo.convertToEmptyDepartment());
-
-        if (null == userDto.getId()) {
-            throw new ParamFailException("userController->method(edit)->parameter id is empty");
-        }
         if (StringUtils.isBlank(userDto.getName())) {
             throw new ParamFailException("userController->method(edit)->parameter name is empty");
         }
+
         boolean b = userService.updateUser(userDto);
         if (b) {
             logger.info("update user success.");
@@ -217,5 +198,4 @@ public class UserController {
         }
         return "redirect:/user/list";
     }
-
 }

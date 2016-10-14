@@ -97,3 +97,7 @@ update `privilege` set is_menu=0 where p_id  >= 5 and p_id <= 16;
 update privilege set p_url='/role/list' where p_id=2;
 update privilege set p_url='/department/list' where p_id=3;
 update privilege set p_url='/user/list' where p_id=4;
+
+//2016/10/13日新增
+//为菜单增加显示级别, 总共就2层级别, 级别存到数据库中,在代码层面就可以减少工作量了
+update privilege set is_menu=2 where p_id in (2,3,4,19,20,21,22,24);

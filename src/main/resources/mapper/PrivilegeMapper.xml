@@ -119,8 +119,6 @@
         rp.r_id=#{id};
     </select>
 
-
-
     <insert id="insertRolePrivileges" parameterType="cn.wxn.example.webapp.entry.Role">
         insert into role_privilege
         (r_id, p_id)

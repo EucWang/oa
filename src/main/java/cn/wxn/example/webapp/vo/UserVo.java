@@ -1,10 +1,13 @@
 package cn.wxn.example.webapp.vo;
 
+import cn.wxn.example.webapp.dto.RoleDto;
+import cn.wxn.example.webapp.dto.UserDto;
 import cn.wxn.example.webapp.entry.Department;
+import cn.wxn.example.webapp.entry.Role;
 import cn.wxn.example.webapp.utils.StringUtils;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.util.Date;
+import java.util.*;
 
 /**
  * Created by wangxn on 2016/10/9.
@@ -31,6 +34,57 @@ public class UserVo {
     private Date birthday;
 
     private String department;
+
+    private String role;
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public Set<Role> getUserRoles(){
+        Set<Role> retVal = null;
+        if (!StringUtils.isNullOrEmpty(role)) {
+            List<String> strings = StringUtils.split2List(role, ",");
+            if (strings != null && strings.size() > 0) {
+                retVal = new HashSet<Role>();
+                for (String roleIdS : strings) {
+                    Long roleIdL = Long.valueOf(roleIdS);
+                    Role role = new Role();
+                    role.setId(roleIdL);
+                    retVal.add(role);
+                }
+            }
+        }
+        return retVal;
+    }
+
+    /**
+     * 将UserVo转换成UserDto的操作
+     * @param
+     * @return
+     */
+    public UserDto convertUserVoToUserDto() {
+        UserDto userDto = new UserDto();
+        if (!StringUtils.isNullOrEmpty(getId())) {
+            Long userIdL = Long.valueOf(getId());
+            userDto.setId(userIdL);
+        }
+        userDto.setName(getName());
+        userDto.setNickname(getNickname());
+        userDto.setGender(getGender());
+        userDto.setPassword(getPassword());
+        userDto.setPhoneNumber(getPhoneNum());
+        userDto.setEmail(getEmail());
+        userDto.setDescription(getDescription());
+        userDto.setBirthday(getBirthday());
+        userDto.setDepartment(convertToEmptyDepartment());
+        userDto.setRoles(getUserRoles());
+        return userDto;
+    }
 
     public String getId() {
         return id;

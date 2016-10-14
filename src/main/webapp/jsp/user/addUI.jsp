@@ -43,6 +43,18 @@
         </div>
 
         <div class="form-group">
+            <label for="role" class="col-sm-2 control-label">所在岗位</label>
+            <div class="col-sm-10">
+                <select class="form-control" name="role" id="role" multiple>
+                    <option value="0">无</option>
+                    <c:forEach items="${roles}" var="role">
+                        <option value="${role.id}">${role.name}</option>
+                    </c:forEach>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
             <label for="name" class="col-sm-2 control-label">雇员名称</label>
             <div class="col-sm-10">
                 <input type="text" class="form-control" name="name" id="name" placeholder="输入雇员名称"/>
