@@ -15,10 +15,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by wangxn on 2016/10/8.
@@ -36,8 +33,16 @@ public class HeadMenuController {
     private UserService userService;
 
     @RequestMapping("/navhead")
-    public ModelAndView navHead(ModelAndView modelAndView, HttpServletRequest request) {
-        modelAndView.addObject("username", request.getAttribute("username"));
+    public ModelAndView navHead(HttpSession httpSession, ModelAndView modelAndView, HttpServletRequest request)throws Exception {
+
+        UserDto userDtoFromSession = SessionUserManager.getUserDtoFromSession(httpSession, userService);
+        if (userDtoFromSession == null) {
+            httpSession.setAttribute("msg", "请先登录再操作!");
+            modelAndView.setViewName("redirect:/err/msg");
+            return modelAndView;
+        }
+
+        modelAndView.addObject("username", userDtoFromSession.getName());
         modelAndView.setViewName("nav/navhead");
         return modelAndView;
     }
@@ -59,8 +64,15 @@ public class HeadMenuController {
 
         Set<PrivilegeVo> privilegeVos = PrivilegeDto.convertPrivilegesDtoToVo(privilegeDtos);
         removeNoMenu(privilegeVos);
+        List<PrivilegeVo> prvilegeVosList = new ArrayList();
+        prvilegeVosList.addAll(privilegeVos);
+        Collections.sort(prvilegeVosList, new Comparator<PrivilegeVo>() {
+            public int compare(PrivilegeVo o1, PrivilegeVo o2) {
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
 
-        modelAndView.addObject("privileges", privilegeVos);
+        modelAndView.addObject("privileges", prvilegeVosList);
         modelAndView.setViewName("nav/navmenu");
 
         return modelAndView;

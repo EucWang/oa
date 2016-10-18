@@ -29,6 +29,9 @@ public class LoginInterceptor implements HandlerInterceptor {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private PrivilegeService privilegeService;
+
     /**
      * 拦截前处理
      *
@@ -44,15 +47,36 @@ public class LoginInterceptor implements HandlerInterceptor {
 
         //首先用户拦截,获取用户信息是否正确
         if (userById != null) {
-            httpServletRequest.setAttribute("username", userById.getName());
+            logger.info("method -> preHandle()  httpServletRequest.setAttribute username = " + userById.getName());
 
-            return true;
+            //然后获取用户的权限,判断是否有访问这个界面的权限
+            boolean hasPrivilege = false;
+            Set<PrivilegeDto> privilegeDtos = SessionUserManager.getUserPrivilegeDtos(userById, privilegeService);
+
+            String servletPath = httpServletRequest.getServletPath();
+            logger.info("method -> preHandle() get ServletPath is ::: " + servletPath);
+
+            if (privilegeDtos != null && privilegeDtos.size() > 0) {
+                for (PrivilegeDto privilegeDto : privilegeDtos) {
+                    if (!StringUtils.isNullOrEmpty(privilegeDto.getUrl())) {
+                        if (privilegeDto.getUrl().equals(servletPath)) {
+                            hasPrivilege = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            logger.info("method -> preHandle() hasPrivilege = " + hasPrivilege);
+            if (!hasPrivilege) {
+                httpServletRequest.getSession().setAttribute("msg", "你没有权限访问这个页面!");
+                httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/err/msg");
+            }
+            return hasPrivilege;
+        } else {
+            httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/user/loginUI");
+            return false;
         }
-
-        httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/user/loginUI");
-        return false;
     }
-
 
 
     public void postHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o, ModelAndView modelAndView) throws Exception {

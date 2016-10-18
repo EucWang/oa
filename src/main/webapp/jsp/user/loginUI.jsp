@@ -37,7 +37,7 @@
                             success: function (data) {
                                 var obj = eval('(' + data + ')');
                                 if("OA0001" == obj.code) {
-                                    location.href = "${pageContext.request.contextPath}/user/list" ;
+                                    location.href = "${pageContext.request.contextPath}/home" ;
                                 } else {
                                     alert(obj.msg);
                                 }

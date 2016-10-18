@@ -25,10 +25,6 @@ public class SessionUserManager {
      */
     public static final String ADMIN_SESSION = "userToken";
 
-
-
-
-
     /**
      *  从Session中获取用户的信息
      * @param session

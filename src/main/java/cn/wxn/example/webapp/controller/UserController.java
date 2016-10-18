@@ -10,6 +10,7 @@ import cn.wxn.example.webapp.service.DepartmentService;
 import cn.wxn.example.webapp.service.PrivilegeService;
 import cn.wxn.example.webapp.service.RoleService;
 import cn.wxn.example.webapp.service.UserService;
+import cn.wxn.example.webapp.utils.SessionUserManager;
 import cn.wxn.example.webapp.utils.StringUtils;
 import cn.wxn.example.webapp.vo.PrivilegeVo;
 import cn.wxn.example.webapp.vo.UserVo;
@@ -19,12 +20,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 /**
@@ -35,7 +34,6 @@ import java.util.List;
 @RequestMapping("/user")
 @SessionAttributes("userToken")
 public class UserController {
-
     private Logger logger = Logger.getLogger(UserController.class);
 
     @Autowired
@@ -53,15 +51,20 @@ public class UserController {
     @Autowired
     private PrivilegeService privilegeService;
 
-
     @RequestMapping("/loginUI")
-    public String loginUI() throws Exception {
-        return "user/loginUI";
+    public String loginUI(HttpSession session) throws Exception {
+        UserDto userDtoFromSession = SessionUserManager.getUserDtoFromSession(session, userService);
+        if (userDtoFromSession == null) {
+            return "user/loginUI";
+        } else {
+            return "redirect:/home";
+        }
     }
 
     @RequestMapping("/login")
     @ResponseBody
     public VoResult login(String username, String password, String rememberme, ModelMap modelMap) throws Exception {
+        logger.info("UserController -> login ->->");
         UserDto userByNameAndPwd = userService.findUserByNameAndPwd(username, password);
             VoResult<UserDto> voResult = new VoResult<UserDto>();
         if (userByNameAndPwd != null) {
@@ -81,14 +84,16 @@ public class UserController {
     }
 
     @RequestMapping("/unlogin")
-    public String unlogin(ModelMap modelMap) {
-        modelMap.addAttribute("userToken", "");
+    public String unlogin(HttpSession session, ModelMap modelMap) {
+        logger.info("UserController -> unlogin ->->");
+        modelMap.remove("userToken");
+        session.removeAttribute("userToken");
         return "redirect:loginUI";
     }
 
     @RequestMapping("/addUI")
     public ModelAndView addUI(ModelAndView modelAndView) throws Exception {
-
+        logger.info("UserController -> addUI ->->");
         List<DepartmentDto> departments = departmentService.findDepartmentsByParentId(-1L);
         modelAndView.addObject("departments", departments);
         List<RoleDto> roles = roleService.findRoles();
@@ -100,6 +105,7 @@ public class UserController {
 
     @RequestMapping("/editUI/{id}")
     public ModelAndView editUI(ModelAndView modelAndView, @PathVariable("id") String id) throws Exception {
+        logger.info("UserController -> editUI ->->");
         if (StringUtils.isBlank(id)) {
             throw new ParamFailException("userController->method(editUI)->parameter id is empty");
         }
@@ -121,6 +127,7 @@ public class UserController {
 
     @RequestMapping("/add")
     public String add(UserVo userVo) throws Exception {
+        logger.info("UserController -> add ->->");
         if (StringUtils.isBlank(userVo.getName())) {
             throw new ParamFailException("userController->method(add)->parameter name is empty");
         }
@@ -137,6 +144,7 @@ public class UserController {
 
     @RequestMapping("/del/{id}")
     public boolean del(@PathVariable("id") String id) throws Exception {
+        logger.info("UserController -> del ->->");
         if (StringUtils.isBlank(id)) {
             throw new ParamFailException("userController->method(del)->parameter id is empty");
         }
@@ -155,6 +163,7 @@ public class UserController {
 
     @RequestMapping("/list")
     public ModelAndView list(ModelAndView modelAndView) throws Exception {
+        logger.info("UserController -> list ->->");
         List<UserDto> users = null;
         try {
             users = userService.findUsers();
@@ -175,6 +184,7 @@ public class UserController {
 
     @RequestMapping("/edit")
     public String edit(UserVo userVo) throws Exception {
+        logger.info("UserController -> edit ->->");
 
         if (StringUtils.isBlank(userVo.getName()) || StringUtils.isBlank(userVo.getId())) {
             throw new ParamFailException("userController->method(add)->parameter name is empty");

@@ -101,3 +101,7 @@ update privilege set p_url='/user/list' where p_id=4;
 //2016/10/13日新增
 //为菜单增加显示级别, 总共就2层级别, 级别存到数据库中,在代码层面就可以减少工作量了
 update privilege set is_menu=2 where p_id in (2,3,4,19,20,21,22,24);
+
+//2016/10/18新增
+//为退出登录的接口增加权限
+insert into privilege (p_id, parent_id, p_name, p_description, p_url, is_menu) values (25,4,'退出登录','退出登录','/user/unlogin',0);

@@ -28,15 +28,9 @@
             <mvc:mapping path="/user/*" />
             <mvc:exclude-mapping path="/user/loginUI" />
             <mvc:exclude-mapping path="/user/login" />
+            <mvc:exclude-mapping path="/user/unlogin" />
+            <mvc:exclude-mapping path="/home" />
             <bean class="cn.wxn.example.webapp.interceptor.LoginInterceptor"/>
-        </mvc:interceptor>
-        <mvc:interceptor>
-            <mvc:mapping path="/role/*" />
-            <mvc:mapping path="/department/*" />
-            <mvc:mapping path="/user/*" />
-            <mvc:exclude-mapping path="/user/loginUI" />
-            <mvc:exclude-mapping path="/user/login" />
-            <bean class="cn.wxn.example.webapp.interceptor.PrivilegeInterceptor"/>
         </mvc:interceptor>
     </mvc:interceptors>
 

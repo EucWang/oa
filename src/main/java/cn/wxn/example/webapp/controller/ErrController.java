@@ -19,7 +19,7 @@ public class ErrController {
     @RequestMapping("/msg")
     public ModelAndView msg(HttpSession session, ModelAndView modelAndView) {
         String msg = (String) session.getAttribute("msg");
-        session.setAttribute("msg", "");
+        session.removeAttribute("msg");
         logger.info("ErrController -> method msg() -> String msg = " + msg);
         modelAndView.addObject("info", msg);
         modelAndView.setViewName("err/msg");
