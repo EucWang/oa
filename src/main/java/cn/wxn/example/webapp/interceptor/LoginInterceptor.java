@@ -59,9 +59,15 @@ public class LoginInterceptor implements HandlerInterceptor {
             if (privilegeDtos != null && privilegeDtos.size() > 0) {
                 for (PrivilegeDto privilegeDto : privilegeDtos) {
                     if (!StringUtils.isNullOrEmpty(privilegeDto.getUrl())) {
-                        if (privilegeDto.getUrl().equals(servletPath)) {
-                            hasPrivilege = true;
-                            break;
+                        String url = privilegeDto.getUrl();
+                        List<String> urls = StringUtils.split2List(url, ",");
+                        if (urls != null && urls.size() > 0) {
+                            for (String urlItem : urls) {
+                                if (urlItem.equals(servletPath)) {
+                                    hasPrivilege = true;
+                                    break;
+                                }
+                            }
                         }
                     }
                 }

@@ -26,6 +26,7 @@
             <mvc:mapping path="/role/*" />
             <mvc:mapping path="/department/*" />
             <mvc:mapping path="/user/*" />
+            <mvc:mapping path="/forum/*" />
             <mvc:exclude-mapping path="/user/loginUI" />
             <mvc:exclude-mapping path="/user/login" />
             <mvc:exclude-mapping path="/user/unlogin" />

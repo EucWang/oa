@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.wxn.example.webapp.dao.ForumMapper">
+    <resultMap id="forumResultMap" type="cn.wxn.example.webapp.entry.Forum">
+        <id column="f_id" property="id"/>
+        <result column="f_name" property="name"/>
+        <result column="f_description" property="description"/>
+        <result column="f_position" property="position"/>
+    </resultMap>
+
+    <insert id="insertForum" parameterType="cn.wxn.example.webapp.entry.Forum" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into forum(
+        f_name, f_position
+        <if test="description != null">
+            ,f_description
+        </if>
+        ) values(
+        #{name}, #{position}
+        <if test="description != null">
+            , #{description}
+        </if>
+        );
+    </insert>
+
+    <update id="updateForum" parameterType="cn.wxn.example.webapp.entry.Forum">
+        update forum SET
+        <trim suffixOverrides=",">
+            <if test="name != null">
+                f_name =#{name},
+            </if>
+            <if test="description != null">
+                f_description = #{description},
+            </if>
+            <if test="position != null">
+                f_position=#{position},
+            </if>
+        </trim>
+        where f_id = #{id};
+    </update>
+
+    <select id="findForumById" parameterType="long" resultMap="forumResultMap">
+        select f_id, f_name, f_description, f_position
+        from forum
+        where f_id=#{id,jdbcType=BIGINT};
+    </select>
+
+    <select id="findForumByPosition" parameterType="long" resultMap="forumResultMap">
+        select f_id, f_name, f_description, f_position
+        from forum
+        where f_position= #{_parameter};
+    </select>
+
+    <!-- 级联删除 ,部门,以及部门的子部门,以及子部门的子部门... -->
+    <delete id="deleteForum" parameterType="long">
+        delete from forum where f_id = #{id};
+    </delete>
+
+    <select id="findForums" resultMap="forumResultMap">
+        select f_id, f_name, f_description, f_position
+        from forum;
+    </select>
+
+    <select id="findForumsAfterPosition" resultMap="forumResultMap" parameterType="int">
+        select f_id, f_name, f_description, f_position
+        from forum
+        where f_position > #{_parameter};
+    </select>
+
+    <select id="findMaxPostion" resultType="int">
+          select max(f_position) from forum;
+    </select>
+
+</mapper>

@@ -150,7 +150,6 @@ public class RoleController {
         Long[] roleprivilegesIdsL = new Long[rolePrivilegeIds.size()];
         rolePrivilegeIds.toArray(roleprivilegesIdsL);
 
-
         //为已经选择的权限设置选中属性,以便界面可以用这个属性回显数据
         setPrivilegeVosOneLevelChecked(privilegeVos, roleprivilegesIdsL);
 
@@ -162,12 +161,15 @@ public class RoleController {
 
     private void setPrivilegeVosOneLevelChecked(List<PrivilegeVo> privilegeVos, Long[] ids) {
         for (PrivilegeVo privilegeVo : privilegeVos) {
+
+            for (int i=0;i<ids.length;i++) {
+                if (privilegeVo.getId() == ids[i]) {
+                    privilegeVo.setChecked(true);
+                    break;
+                }
+            }
             if (privilegeVo.getChildren() != null && privilegeVo.getChildren().size() > 0) {
                 setPrivilegeVosOneLevelChecked(privilegeVo.getChildren(), ids);
-            }
-
-            if (Arrays.binarySearch(ids, privilegeVo.getId()) > 0) {
-                privilegeVo.setChecked(true);
             }
         }
     }

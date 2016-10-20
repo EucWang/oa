@@ -56,7 +56,7 @@
     <form class="form-signin form-validate" id="loginform" role="form">
         <h2 class="form-signin-heading">请登录</h2>
         <input type="text" name="username" class="form-control username" placeholder="用户名" required autofocus>
-        <input type="text" name="password" class="form-control password" placeholder="密码" required>
+        <input type="password" name="password" class="form-control password" placeholder="密码" required>
         <div class="checkbox">
             <label>
                 <input name="rememberme" type="checkbox" value="remember-me">记住我

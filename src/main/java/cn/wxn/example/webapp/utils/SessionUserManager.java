@@ -60,4 +60,5 @@ public class SessionUserManager {
         }
         return privilegeDtos;
     }
+
 }
